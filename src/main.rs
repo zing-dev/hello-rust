@@ -163,7 +163,8 @@ fn collection(){
 //    collection::vector();
 //    collection::string();
 //    collection::string2();
-    collection::string3();
+//    collection::string3();
+    collection::map();
 }
 fn main() {
     collection();

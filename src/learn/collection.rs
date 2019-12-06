@@ -265,3 +265,298 @@ pub fn string3() {
     // the first byte is invalid here
     assert_eq!(1, error.valid_up_to());
 }
+
+pub fn map() {
+    use std::collections::HashMap;
+// Type inference lets us omit an explicit type signature (which
+// would be `HashMap<String, String>` in this example).
+    let mut book_reviews = HashMap::new();
+// Review some books.
+    book_reviews.insert(
+        "Adventures of Huckleberry Finn".to_string(),
+        "My favorite book.".to_string(),
+    );
+    book_reviews.insert(
+        "Grimms' Fairy Tales".to_string(),
+        "Masterpiece.".to_string(),
+    );
+    book_reviews.insert(
+        "Pride and Prejudice".to_string(),
+        "Very enjoyable.".to_string(),
+    );
+    book_reviews.insert(
+        "The Adventures of Sherlock Holmes".to_string(),
+        "Eye lyked it alot.".to_string(),
+    );
+// Check for a specific one.
+// When collections store owned values (String), they can still be
+// queried using references (&str).
+    if !book_reviews.contains_key("Les Misérables") {
+        println!("We've got {} reviews, but Les Misérables ain't one.",
+                 book_reviews.len());
+    }
+// oops, this review has a lot of spelling mistakes, let's delete it.
+    book_reviews.remove("The Adventures of Sherlock Holmes");
+// Look up the values associated with some keys.
+    let to_find = ["Pride and Prejudice", "Alice's Adventure in Wonderland"];
+    for &book in &to_find {
+        match book_reviews.get(book) {
+            Some(review) => println!("{}: {}", book, review),
+            None => println!("{} is unreviewed.", book)
+        }
+    }
+// Look up the value for a key (will panic if the key is not found).
+    println!("Review for Jane: {}", book_reviews["Pride and Prejudice"]);
+// Iterate over everything.
+    for (book, review) in &book_reviews {
+        println!("{}: \"{}\"", book, review);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // type inference lets us omit an explicit type signature (which
+// would be `HashMap<&str, u8>` in this example).
+    let mut player_stats = HashMap::new();
+    fn random_stat_buff() -> u8 {
+        // could actually return some random value here - let's just return
+        // some fixed value for now
+        42
+    }
+// insert a key only if it doesn't already exist
+    player_stats.entry("health").or_insert(100);
+// insert a key using a function that provides a new value only if it
+// doesn't already exist
+    player_stats.entry("defence").or_insert_with(random_stat_buff);
+// update a key, guarding against the key possibly not being set
+    let stat = player_stats.entry("attack").or_insert(100);
+    *stat += random_stat_buff();
+
+    for (player, stat) in &player_stats {
+        println!("{}: \"{}\"", player, stat);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    #[derive(Hash, Eq, PartialEq, Debug)]
+    struct Viking {
+        name: String,
+        country: String,
+    }
+    impl Viking {
+        /// Creates a new Viking.
+        fn new(name: &str, country: &str) -> Viking {
+            Viking { name: name.to_string(), country: country.to_string() }
+        }
+    }
+    // Use a HashMap to store the vikings' health points.
+    let mut vikings = HashMap::new();
+    vikings.insert(Viking::new("Einar", "Norway"), 25);
+    vikings.insert(Viking::new("Olaf", "Denmark"), 24);
+    vikings.insert(Viking::new("Harald", "Iceland"), 12);
+    // Use derived implementation to print the status of the vikings.
+    for (viking, health) in &vikings {
+        println!("{:?} has {} hp", viking, health);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    let timber_resources: HashMap<&str, i32> = [("Norway", 100), ("Denmark", 50), ("Iceland", 10)].
+        iter().
+        cloned().
+        collect();
+    for (resource, timber) in &timber_resources {
+        println!("{} ==>  {}", resource, timber);
+    }
+
+    //capacity
+    let map: HashMap<i32, i32> = HashMap::with_capacity(100);
+    assert!(map.capacity() >= 100);
+
+    //keys
+    let mut map = HashMap::new();
+    map.insert("a", 1);
+    map.insert("b", 2);
+    map.insert("c", 3);
+    for key in map.keys() {
+        println!("{}", key);
+    }
+
+    //values
+    for val in map.values() {
+        println!("{}", val);
+    }
+
+    //values_mut
+    for val in map.values_mut() {
+        *val = *val + 10;
+    }
+    for val in map.values() {
+        println!("{}", val);
+    }
+
+    //iter
+    for (key, val) in map.iter() {
+        println!("key: {} val: {}", key, val);
+    }
+
+    //iter_mut
+    // Update all values
+    for (_, val) in map.iter_mut() {
+        *val *= 2;
+    }
+    for (key, val) in &map {
+        println!("key: {} val: {}", key, val);
+    }
+
+    //len
+    let mut a = HashMap::new();
+    assert_eq!(a.len(), 0);
+    a.insert(1, "a");
+    assert_eq!(a.len(), 1);
+
+    //is_empty
+    let mut a = HashMap::new();
+    assert!(a.is_empty());
+    a.insert(1, "a");
+    assert!(!a.is_empty());
+
+    //drain
+    let mut a = HashMap::new();
+    a.insert(1, "a");
+    a.insert(2, "b");
+    for (k, v) in a.drain().take(2) {
+        println!("key: {} val: {}", k, v);
+        assert!(k == 1 || k == 2);
+        assert!(v == "a" || v == "b");
+    }
+    assert!(a.is_empty());
+
+    //clear
+    let mut a = HashMap::new();
+    a.insert(1, "a");
+    a.clear();
+    assert!(a.is_empty());
+
+    //entry
+    let mut letters = HashMap::new();
+    for ch in "a short treatise on fungi".chars() {
+        let counter = letters.entry(ch).or_insert(0);
+        *counter += 1;
+    }
+    assert_eq!(letters[&'s'], 2);
+    assert_eq!(letters[&'t'], 3);
+    assert_eq!(letters[&'u'], 1);
+    assert_eq!(letters[&' '], 4);
+    assert_eq!(letters.get(&'y'), None);
+
+    //get
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    assert_eq!(map.get(&1), Some(&"a"));
+    assert_eq!(map.get(&2), None);
+
+    //contains_key
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    assert_eq!(map.contains_key(&1), true);
+    assert_eq!(map.contains_key(&2), false);
+
+    //get_mut
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    if let Some(x) = map.get_mut(&1) {
+        *x = "b";
+    }
+    assert_eq!(map[&1], "b");
+
+    //insert
+    let mut map = HashMap::new();
+    assert_eq!(map.insert(37, "a"), None);
+    assert_eq!(map.is_empty(), false);
+    map.insert(37, "b");
+    assert_eq!(map.insert(37, "c"), Some("b"));
+    assert_eq!(map[&37], "c");
+
+    //remove
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    println!("{:?}", map);
+    assert_eq!(map.remove(&1), Some("a"));
+    println!("{:?}", map);
+    assert_eq!(map.remove(&1), None);
+
+    //remove_entry
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    println!("{:?}", map);
+    assert_eq!(map.remove_entry(&1), Some((1, "a")));
+    println!("{:?}", map);
+    assert_eq!(map.remove(&1), None);
+
+    //retain
+    let mut map: HashMap<i32, i32> = (0..8).map(|x| (x, x * 10)).collect();
+    println!("{:?}", map);
+    map.retain(|&k, v| {
+        *v *= 2;
+        k % 2 == 0
+    });
+    println!("{:?}", map);
+    assert_eq!(map.len(), 4);
+
+    //into_iter
+    let mut map = HashMap::new();
+    map.insert("a", 1);
+    map.insert("b", 2);
+    map.insert("c", 3);
+    // Not possible with .iter()
+    let vec: Vec<(&str, i32)> = map.into_iter().collect();
+    println!("{:?}", vec);
+
+    //or_insert
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    map.entry("poneyland").or_insert(3);
+    assert_eq!(map["poneyland"], 3);
+    *map.entry("poneyland").or_insert(10) *= 2;
+    assert_eq!(map["poneyland"], 6);
+
+    //or_insert_with
+    let mut map: HashMap<&str, String> = HashMap::new();
+    let s = "hoho".to_string();
+    map.entry("poneyland").or_insert_with(|| s);
+    assert_eq!(map["poneyland"], "hoho".to_string());
+
+    //key
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    assert_eq!(map.entry("poneyland").key(), &"poneyland");
+    println!("{:?}", map.entry("poneyland"));
+    println!("{}", map.entry("poneyland").key());
+    println!("{}", map.entry("fuck").key());
+    println!("{:?}", map);
+
+    //and_modify
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    map.entry("poneyland")
+        .and_modify(|e| { *e += 1 })
+        .or_insert(42);
+    assert_eq!(map["poneyland"], 42);
+    map.entry("poneyland")
+        .and_modify(|e| { *e += 1 })
+        .or_insert(42);
+    assert_eq!(map["poneyland"], 43);
+
+    //or_default
+    let mut map: HashMap<&str, Option<u32>> = HashMap::new();
+    map.entry("poneyland").or_default();
+    assert_eq!(map["poneyland"], None);
+
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    map.entry("poneyland").or_insert(12);
+    assert_eq!(map.entry("poneyland").key(), &"poneyland");
+
+    use std::collections::hash_map::Entry;
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    map.entry("poneyland").or_insert(12);
+    if let Entry::Occupied(o) = map.entry("poneyland") {
+        // We delete the entry from the map.
+        println!("{:?}",o);
+        o.remove_entry();
+    }
+    assert_eq!(map.contains_key("poneyland"), false);
+}
