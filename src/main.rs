@@ -134,6 +134,11 @@ fn lifetimes(){
     lifetime::static_test();
 }
 
+fn box_test(){
+    use learn::std_test;
+    std_test::box_test()
+}
+
 fn trait_test(){
     use learn::trait_test;
     trait_test::derive();
@@ -168,4 +173,5 @@ fn collection(){
 }
 fn main() {
     collection();
+    box_test()
 }
