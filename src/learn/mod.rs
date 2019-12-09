@@ -15,3 +15,5 @@ pub mod std_test;
 pub mod trait_test;
 pub mod concurrency;
 pub mod collection;
+pub mod net;
+pub mod test;
