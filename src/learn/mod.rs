@@ -16,4 +16,5 @@ pub mod trait_test;
 pub mod concurrency;
 pub mod collection;
 pub mod net;
+pub mod net2;
 pub mod test;

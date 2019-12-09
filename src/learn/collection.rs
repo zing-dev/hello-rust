@@ -657,7 +657,7 @@ pub fn set(){
     //hasher
     let hasher = RandomState::new();
     let set: HashSet<i32> = HashSet::with_hasher(hasher);
-    let hasher: &RandomState = set.hasher();
+    let _hasher: &RandomState = set.hasher();
 
     //reserve
     let mut set: HashSet<i32> = HashSet::new();

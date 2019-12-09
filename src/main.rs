@@ -172,6 +172,12 @@ fn collection(){
 //    collection::map();
     collection::set();
 }
+fn net(){
+    use learn::net;
+//    net::addr();
+//    net::ip();
+    net::tcp();
+}
 fn main() {
-    collection();
+    net();
 }
