@@ -560,3 +560,235 @@ pub fn map() {
     }
     assert_eq!(map.contains_key("poneyland"), false);
 }
+
+pub fn set(){
+    use std::collections::HashSet;
+    // Type inference lets us omit an explicit type signature (which
+    // would be `HashSet<String>` in this example).
+    let mut books = HashSet::new();
+    // Add some books.
+    books.insert("A Dance With Dragons".to_string());
+    books.insert("To Kill a Mockingbird".to_string());
+    books.insert("The Odyssey".to_string());
+    books.insert("The Great Gatsby".to_string());
+    // Check for a specific one.
+    if !books.contains("The Winds of Winter") {
+        println!("We have {} books, but The Winds of Winter ain't one.",
+                 books.len());
+    }
+    // Remove a book.
+    books.remove("The Odyssey");
+    // Iterate over everything.
+    for book in &books {
+        println!("{}", book);
+    }
+
+    #[derive(Hash, Eq, PartialEq, Debug)]
+    struct Viking {
+        name: String,
+        power: usize,
+    }
+    let mut vikings = HashSet::new();
+    vikings.insert(Viking { name: "Einar".to_string(), power: 9 });
+    vikings.insert(Viking { name: "Einar".to_string(), power: 9 });
+    vikings.insert(Viking { name: "Olaf".to_string(), power: 4 });
+    vikings.insert(Viking { name: "Harald".to_string(), power: 8 });
+    // Use derived implementation to print the vikings.
+    for x in &vikings {
+        println!("{:?}", x);
+    }
+
+    //new
+    let _set: HashSet<i32> = HashSet::new();
+
+    //with_capacity capacity
+    let set: HashSet<i32> = HashSet::with_capacity(10);
+    assert!(set.capacity() >= 10);
+
+    //iter
+    let mut set = HashSet::new();
+    set.insert("a");
+    set.insert("b");
+    set.insert("c");
+    set.insert("d");
+    for x in set.iter() {
+        // Will print in an arbitrary order.
+        println!("{}", x);
+    }
+
+    //len
+    let mut v = HashSet::new();
+    assert_eq!(v.len(), 0);
+    v.insert(1);
+    assert_eq!(v.len(), 1);
+
+    //is_empty
+    let mut v = HashSet::new();
+    assert!(v.is_empty());
+    v.insert(1);
+    assert!(!v.is_empty());
+
+    //drain
+    let mut set: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    assert!(!set.is_empty());
+    // print 1, 2, 3 in an arbitrary order
+    for i in set.drain() {
+        println!("{}", i);
+    }
+    assert!(set.is_empty());
+
+    //clear
+    let mut v = HashSet::new();
+    v.insert(1);
+    v.clear();
+    assert!(v.is_empty());
+
+    //with_hasher
+    use std::collections::hash_map::RandomState;
+    let s = RandomState::new();
+    let mut set = HashSet::with_hasher(s);
+    set.insert(2);
+
+    //with_capacity_and_hasher
+    let s = RandomState::new();
+    let mut set = HashSet::with_capacity_and_hasher(10, s);
+    set.insert(1);
+
+    //hasher
+    let hasher = RandomState::new();
+    let set: HashSet<i32> = HashSet::with_hasher(hasher);
+    let hasher: &RandomState = set.hasher();
+
+    //reserve
+    let mut set: HashSet<i32> = HashSet::new();
+    set.reserve(10);
+    assert!(set.capacity() >= 10);
+
+    //shrink_to_fit
+    let mut set = HashSet::with_capacity(100);
+    set.insert(1);
+    set.insert(2);
+    assert!(set.capacity() >= 100);
+    set.shrink_to_fit();
+    assert!(set.capacity() >= 2);
+
+    //difference
+    let a: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let b: HashSet<_> = [4, 2, 3, 4].iter().cloned().collect();
+    // Can be seen as `a - b`.
+    for x in a.difference(&b) {
+        println!("difference a {}", x); // Print 1
+    }
+    for x in b.difference(&a) {
+        println!("difference b {}", x); // Print 1
+    }
+    let diff: HashSet<_> = a.difference(&b).collect();
+    assert_eq!(diff, [1].iter().collect());
+    // Note that difference is not symmetric,
+    // and `b - a` means something else:
+    let diff: HashSet<_> = b.difference(&a).collect();
+    assert_eq!(diff, [4].iter().collect());
+
+    //symmetric_difference
+    let a: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let b: HashSet<_> = [4, 2, 3, 4].iter().cloned().collect();
+    // Print 1, 4 in arbitrary order.
+    for x in a.symmetric_difference(&b) {
+        println!("symmetric_difference a {}", x);
+    }
+    for x in b.symmetric_difference(&a) {
+        println!("symmetric_difference b {}", x);
+    }
+    let diff1: HashSet<_> = a.symmetric_difference(&b).collect();
+    let diff2: HashSet<_> = b.symmetric_difference(&a).collect();
+    assert_eq!(diff1, diff2);
+    assert_eq!(diff1, [1, 4].iter().collect());
+
+    //intersection
+    let a: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let b: HashSet<_> = [4, 2, 3, 4].iter().cloned().collect();
+    // Print 2, 3 in arbitrary order.
+    for x in a.intersection(&b) {
+        println!("{}", x);
+    }
+    let intersection: HashSet<_> = a.intersection(&b).collect();
+    assert_eq!(intersection, [2, 3].iter().collect());
+
+    //union
+    let a: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let b: HashSet<_> = [4, 2, 3, 4].iter().cloned().collect();
+    // Print 1, 2, 3, 4 in arbitrary order.
+    for x in a.union(&b) {
+        println!("union {}", x);
+    }
+    let union: HashSet<_> = a.union(&b).collect();
+    assert_eq!(union, [1, 2, 3, 4].iter().collect());
+
+    let set: HashSet<_> = [1, 2, 3].iter().clone().collect();
+    assert_eq!(set.contains(&1), true);
+    assert_eq!(set.contains(&4), false);
+
+    //get
+    let set: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    assert_eq!(set.get(&2), Some(&2));
+    assert_eq!(set.get(&4), None);
+
+    //is_disjoint
+    let a: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let mut b = HashSet::new();
+    assert_eq!(a.is_disjoint(&b), true);
+    b.insert(4);
+    assert_eq!(a.is_disjoint(&b), true);
+    b.insert(1);
+    assert_eq!(a.is_disjoint(&b), false);
+
+    //is_subset
+    let sup: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    let mut set = HashSet::new();
+    assert_eq!(set.is_subset(&sup), true);
+    set.insert(2);
+    assert_eq!(set.is_subset(&sup), true);
+    set.insert(4);
+    assert_eq!(set.is_subset(&sup), false);
+
+    //is_superset
+    let sub: HashSet<_> = [1, 2].iter().cloned().collect();
+    let mut set = HashSet::new();
+    assert_eq!(set.is_superset(&sub), false);
+    set.insert(0);
+    set.insert(1);
+    assert_eq!(set.is_superset(&sub), false);
+    set.insert(2);
+    assert_eq!(set.is_superset(&sub), true);
+
+    //insert
+    let mut set = HashSet::new();
+    assert_eq!(set.insert(2), true);
+    assert_eq!(set.insert(2), false);
+    assert_eq!(set.len(), 1);
+
+    //replace
+    let mut set = HashSet::new();
+    set.insert(Vec::<i32>::new());
+    assert_eq!(set.get(&[][..]).unwrap().capacity(), 0);
+    set.replace(Vec::with_capacity(10));
+    assert_eq!(set.get(&[][..]).unwrap().capacity(), 10);
+
+    //remove
+    let mut set = HashSet::new();
+    set.insert(2);
+    assert_eq!(set.remove(&2), true);
+    assert_eq!(set.remove(&2), false);
+
+    //take
+    let mut set: HashSet<_> = [1, 2, 3].iter().cloned().collect();
+    assert_eq!(set.take(&2), Some(2));
+    assert_eq!(set.take(&2), None);
+
+    //retain
+    let xs = [1,2,3,4,5,6];
+    let mut set: HashSet<i32> = xs.iter().cloned().collect();
+    set.retain(|&k| k % 2 == 0);
+    assert_eq!(set.len(), 3);
+}
+

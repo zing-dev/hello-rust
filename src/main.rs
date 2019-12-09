@@ -169,9 +169,9 @@ fn collection(){
 //    collection::string();
 //    collection::string2();
 //    collection::string3();
-    collection::map();
+//    collection::map();
+    collection::set();
 }
 fn main() {
     collection();
-    box_test()
 }

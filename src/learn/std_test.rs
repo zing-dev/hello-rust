@@ -63,5 +63,5 @@ pub fn box_test() {
     println!("Unboxed point occupies {} bytes on the stack",
              mem::size_of_val(&unboxed_point));
 
-    String::from("").;
+    String::from("");
 }
