@@ -5,7 +5,6 @@ mod net {
     use std::thread::sleep;
     use std::time::Duration;
     use std::thread;
-    use std::intrinsics::log2f32;
 
     #[test]
     fn string() {
