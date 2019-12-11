@@ -2,7 +2,6 @@
 mod time {
     use std::time::*;
     use std::thread::sleep;
-    use std::fmt::Debug;
     use std::ops::Add;
 
     #[test]
