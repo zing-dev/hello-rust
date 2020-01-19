@@ -53,6 +53,12 @@ fn are_you_on_linux() {
     println!("You are *not* running linux!");
 }
 
+#[cfg(not(target_os = "windows"))]
+fn are_you_on_windows() {
+    println!("You are *not* running windows!");
+}
+
+
 #[cfg(target_os = "windows")]
 fn are_you_on_windows() {
     println!("You are running windows!");
@@ -66,6 +72,5 @@ pub fn cfg() {
     } else {
         println!("Yes. It's definitely *not* linux!");
     }
-
     are_you_on_windows()
 }

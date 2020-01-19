@@ -176,7 +176,7 @@ fn net(){
     use learn::net;
 //    net::addr();
 //    net::ip();
-    net::tcp();
+//    net::tcp();
 }
 fn main() {
     net();

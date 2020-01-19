@@ -46,7 +46,7 @@ pub mod io {
         let buffer = vec![1, 2, 3, 5, 8];
         let num_bytes = io::sink().write(&buffer).unwrap();
         assert_eq!(num_bytes, 5);
-        println!("{}", io::sink().write(&[]).unwrap())
+        println!("{}", io::sink().write(&[]).unwrap());
 
         let mut s = io::sink();
         assert_eq!(s.write(&[]).unwrap(), 0);
