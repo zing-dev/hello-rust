@@ -2,13 +2,14 @@
 #![allow(dead_code)]
 
 pub mod learn;
+pub mod test;
 
 fn types() {
     use learn::types;
-
-    types::literals();
-    types::inference();
-    types::alias()
+    types::cast();
+    // types::literals();
+    // types::inference();
+    // types::alias()
 }
 
 fn conversion() {
@@ -179,5 +180,5 @@ fn net(){
 //    net::tcp();
 }
 fn main() {
-    net();
+    types();
 }

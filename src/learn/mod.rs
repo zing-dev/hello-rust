@@ -1,4 +1,5 @@
 pub mod types;
+pub mod types_test;
 pub mod variables;
 pub mod conversion;
 pub mod expression;
@@ -21,5 +22,5 @@ pub mod test;
 pub mod time;
 pub mod fs;
 pub mod macros;
-pub mod demo;
+//pub mod demo;
 pub mod io;
