@@ -1,7 +1,6 @@
 #[cfg(test)]
 pub mod macros {
     use core::fmt::Write as CoreFmtWrite;
-    use core::result::Result as CoreResult;
     use std::fmt;
     use std::fmt::Write as FmtWrite;
     use std::io::{self, Result as IOResult, Write};
@@ -51,7 +50,7 @@ pub mod macros {
     fn assert_eq() {
         let a = 2;
         let b = dbg!(a * 2) + 1;
-//      ^-- prints: [src/main.rs:2] a * 2 = 4
+        //      ^-- prints: [src/main.rs:2] a * 2 = 4
         assert_eq!(b, 5);
         assert_eq!(5, 5);
         assert_eq!(true, !false);
@@ -78,8 +77,8 @@ pub mod macros {
 
         assert_eq!(dbg!(1usize, 2u32), (1, 2));
 
-        assert_eq!(1, dbg!(1u32, )); // trailing comma ignored
-        assert_eq!((1, ), dbg!((1u32, ))); // 1-tuple
+        assert_eq!(1, dbg!(1u32,)); // trailing comma ignored
+        assert_eq!((1,), dbg!((1u32,))); // 1-tuple
     }
 
     #[test]
@@ -95,7 +94,9 @@ pub mod macros {
         // the panic message for these assertions is the stringified value of the
         // expression given.
         debug_assert!(true);
-        fn some_expensive_computation() -> bool { true } // a very simple function
+        fn some_expensive_computation() -> bool {
+            true
+        } // a very simple function
         debug_assert!(some_expensive_computation());
         // assert with a custom message
         let x = true;
@@ -173,14 +174,19 @@ pub mod macros {
                 Some(n) if n >= 0 => println!("Some(Non-negative)"),
                 Some(n) if n < 0 => println!("Some(Negative)"),
                 Some(_) => unreachable!(), // compile error if commented out
-                None => println!("None")
+                None => println!("None"),
             }
         }
 
-        fn divide_by_three(x: u32) -> u32 { // one of the poorest implementations of x/3
+        fn divide_by_three(x: u32) -> u32 {
+            // one of the poorest implementations of x/3
             for i in 0.. {
-                if 3 * i < i { panic!("u32 overflow"); }
-                if x < 3 * i { return i - 1; }
+                if 3 * i < i {
+                    panic!("u32 overflow");
+                }
+                if x < 3 * i {
+                    return i - 1;
+                }
             }
             unreachable!();
         }
@@ -237,7 +243,7 @@ pub mod macros {
     }
 
     #[test]
-    fn stringify(){
+    fn stringify() {
         let one_plus_one = stringify!(1 + 1);
         assert_eq!(one_plus_one, "1 + 1");
         println!(stringify!(true));
@@ -245,14 +251,17 @@ pub mod macros {
     }
 
     #[test]
-    fn assert(){
+    fn assert() {
         assert!(true);
-        fn some_computation() -> bool { true } // a very simple function
+        fn some_computation() -> bool {
+            true
+        } // a very simple function
         assert!(some_computation());
         // assert with a custom message
         let x = true;
         assert!(x, "x wasn't true!");
-        let a = 3; let b = 27;
+        let a = 3;
+        let b = 27;
         assert!(a + b >= 30, "a = {}, b = {}", a, b);
     }
 }

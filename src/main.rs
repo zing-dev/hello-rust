@@ -1,5 +1,6 @@
 #![allow(ellipsis_inclusive_range_patterns)]
 #![allow(dead_code)]
+#![allow(unused_imports)]
 
 pub mod learn;
 pub mod test;
@@ -25,7 +26,6 @@ fn expression() {
 
     expression::expression2()
 }
-
 
 fn flow_control() {
     use learn::flow_control;
@@ -64,7 +64,7 @@ fn function() {
     function::input_functions();
     function::anonymity();
     function::output_parameters();
-//    function::iter_any();
+    //    function::iter_any();
 }
 
 fn function2() {
@@ -108,7 +108,7 @@ fn generics() {
     generics::case_units()
 }
 
-fn scope(){
+fn scope() {
     use learn::scope;
 
     scope::raii();
@@ -122,7 +122,7 @@ fn scope(){
     scope::ref_test();
 }
 
-fn lifetimes(){
+fn lifetimes() {
     use learn::lifetime;
     lifetime::lifetimes();
     lifetime::explicit();
@@ -135,12 +135,12 @@ fn lifetimes(){
     lifetime::static_test();
 }
 
-fn box_test(){
+fn box_test() {
     use learn::std_test;
     std_test::box_test()
 }
 
-fn trait_test(){
+fn trait_test() {
     use learn::trait_test;
     trait_test::derive();
     trait_test::dyn_test();
@@ -150,34 +150,33 @@ fn trait_test(){
     trait_test::impl_trait();
     trait_test::clone();
     trait_test::disambiguating();
-
 }
 
-fn concurrency(){
+fn concurrency() {
     use learn::concurrency;
-//    concurrency::thread1();
-//    concurrency::thread2();
-//    concurrency::thread3();
-//    concurrency::thread4();
-//    concurrency::message_passing();
-//    concurrency::message_passing2();
+    //    concurrency::thread1();
+    //    concurrency::thread2();
+    //    concurrency::thread3();
+    //    concurrency::thread4();
+    //    concurrency::message_passing();
+    //    concurrency::message_passing2();
     concurrency::message_passing3();
 }
 
-fn collection(){
+fn collection() {
     use learn::collection;
-//    collection::vector();
-//    collection::string();
-//    collection::string2();
-//    collection::string3();
-//    collection::map();
+    //    collection::vector();
+    //    collection::string();
+    //    collection::string2();
+    //    collection::string3();
+    //    collection::map();
     collection::set();
 }
-fn net(){
+fn net() {
     use learn::net;
-//    net::addr();
-//    net::ip();
-//    net::tcp();
+    //    net::addr();
+    //    net::ip();
+    //    net::tcp();
 }
 fn main() {
     types();

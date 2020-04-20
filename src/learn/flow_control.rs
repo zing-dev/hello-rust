@@ -9,19 +9,18 @@ pub fn if_else() {
         print!("{} is zero", n);
     }
 
-    let big_n =
-        if n < 10 && n > -10 {
-            println!(", and is a small number, increase ten-fold");
+    let big_n = if n < 10 && n > -10 {
+        println!(", and is a small number, increase ten-fold");
 
-            // This expression returns an `i32`.
-            10 * n
-        } else {
-            println!(", and is a big number, halve the number");
+        // This expression returns an `i32`.
+        10 * n
+    } else {
+        println!(", and is a big number, halve the number");
 
-            // This expression must return an `i32` as well.
-            n / 2
-            // TODO ^ Try suppressing this expression with a semicolon.
-        };
+        // This expression must return an `i32` as well.
+        n / 2
+        // TODO ^ Try suppressing this expression with a semicolon.
+    };
     //   ^ Don't forget to put a semicolon here! All `let` bindings need it.
 
     println!("{} -> {}", n, big_n);
@@ -32,14 +31,14 @@ pub fn loop_test() {
 
     println!("Let's count until infinity!");
 
-// Infinite loop
+    // Infinite loop
     loop {
         count += 1;
 
         if count == 3 {
             println!("three");
 
-// Skip the rest of this iteration
+            // Skip the rest of this iteration
             continue;
         }
 
@@ -48,13 +47,14 @@ pub fn loop_test() {
         if count == 5 {
             println!("OK, that's enough");
 
-// Exit this loop
+            // Exit this loop
             break;
         }
     }
 }
 
 #[allow(unreachable_code)]
+#[allow(unused_labels)]
 pub fn loop_nested_label() {
     'outer: loop {
         println!("Entered the outer loop");

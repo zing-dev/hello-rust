@@ -44,13 +44,18 @@ fn println() {
     println!("{0}, this is {1}. {1}, this is {0}", "Alice", "Bob");
 
     // As can named arguments.
-    println!("{subject} {verb} {object}",
-             object = "the lazy dog",
-             subject = "the quick brown fox",
-             verb = "jumps over");
+    println!(
+        "{subject} {verb} {object}",
+        object = "the lazy dog",
+        subject = "the quick brown fox",
+        verb = "jumps over"
+    );
 
     // Special formatting can be specified after a `:`.
-    println!("{} of {:b} people know binary, the other half doesn't", 1, 2);
+    println!(
+        "{} of {:b} people know binary, the other half doesn't",
+        1, 2
+    );
 
     // You can right-align text with a specified width. This will output
     // "     1". 5 white spaces and a "1".
@@ -97,7 +102,10 @@ fn debug() {
         }
     }
 
-    let rust = Language { name: "Language: rust".to_owned(), age: 8 };
+    let rust = Language {
+        name: "Language: rust".to_owned(),
+        age: 8,
+    };
     println!("{}", rust);
     println!("{:?}", rust);
     println!("{:#?}", rust);
@@ -120,7 +128,7 @@ fn display() {
     use std::fmt; // Import `fmt`
 
     // A structure holding two numbers. `Debug` will be derived so the results can
-// be contrasted with `Display`.
+    // be contrasted with `Display`.
     #[derive(Debug)]
     struct MinMax(i64, i64);
 
@@ -163,9 +171,11 @@ fn display() {
     let big_range = MinMax(-300, 300);
     let small_range = MinMax(-3, 3);
 
-    println!("The big range is {big} and the small is {small}",
-             small = small_range,
-             big = big_range);
+    println!(
+        "The big range is {big} and the small is {small}",
+        small = small_range,
+        big = big_range
+    );
 
     let point = Point2D { x: 13.3, y: 17.2 };
 
@@ -177,7 +187,7 @@ fn display() {
 
 #[test]
 fn list() {
-    use std::fmt::{self, Debug, Display};
+    use std::fmt;
     struct List(Vec<i32>);
 
     impl fmt::Display for List {
@@ -193,7 +203,9 @@ fn list() {
             for (count, v) in vec.iter().enumerate() {
                 // For every element except the first, add a comma.
                 // Use the ? operator, or try!, to return on errors.
-                if count != 0 { write!(f, ", ")?; }
+                if count != 0 {
+                    write!(f, ", ")?;
+                }
                 write!(f, "{:?}", v)?;
             }
 

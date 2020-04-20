@@ -1,11 +1,10 @@
 #[cfg(test)]
 pub mod fs {
-    use std::{fs, io};
     use std::any::Any;
-    use std::fs::{DirEntry, File, OpenOptions};
-    use std::io::BufReader;
+    use std::fs;
+    use std::fs::{File, OpenOptions};
     use std::io::prelude::*;
-    use std::path::Path;
+    use std::io::BufReader;
 
     #[test]
     fn write_all() -> std::io::Result<()> {
@@ -159,7 +158,8 @@ pub mod fs {
 
         #[test]
         fn create_new() {
-            let file = OpenOptions::new().write(true)
+            let file = OpenOptions::new()
+                .write(true)
                 .create_new(true)
                 .open("foo.txt");
         }
@@ -382,7 +382,7 @@ pub mod fs {
 
     #[test]
     fn copy() -> std::io::Result<()> {
-        fs::copy("foo.txt", "bar.txt")?;  // Copy foo.txt to bar.txt
+        fs::copy("foo.txt", "bar.txt")?; // Copy foo.txt to bar.txt
         Ok(())
     }
 
