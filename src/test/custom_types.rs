@@ -1,7 +1,4 @@
-use std::borrow::{Borrow, BorrowMut};
-
 use crate::test::custom_types::List::*;
-
 #[test]
 fn struct_test() {
     #[derive(Debug)]
