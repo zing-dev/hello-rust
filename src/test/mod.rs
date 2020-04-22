@@ -1,3 +1,4 @@
+pub mod conversion;
 pub mod custom_types;
 pub mod hello_world;
 pub mod primitives;
