@@ -3,6 +3,7 @@
 #![allow(unused_imports)]
 
 pub mod learn;
+pub mod lib;
 pub mod test;
 
 fn types() {
