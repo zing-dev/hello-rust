@@ -1,4 +1,7 @@
 pub mod chrono {
+    use std::thread::sleep;
+    use std::time::Duration;
+
     use chrono::{FixedOffset, Local, LocalResult, TimeZone, Utc, Weekday};
 
     #[test]
@@ -35,5 +38,33 @@ pub mod chrono {
             .ymd(2014, 7, 8)
             .and_hms_milli(18, 10, 11, 12);
         assert_eq!(dt, fixed_dt);
+    }
+
+    pub mod local {
+        use chrono::{Local, NaiveTime};
+        use std::time::Duration;
+        use std::thread::sleep;
+
+        #[test]
+        fn today(){
+            let local = Local::today();
+            println!("{}", local);
+            println!("{}", local.format("%Y-%m-%e"));
+            let datetime = local.and_hms(1, 2, 3);
+            println!("{}", datetime.format("%Y-%m-%e %H:%M:%S"));
+            let option = local.and_time(NaiveTime::from_hms(1, 2, 3));
+            println!("{}",option.unwrap());
+        }
+
+
+        #[test]
+        fn now() {
+            let mut local = Local::now();
+            println!("{}", local.to_string());
+            println!("{}", local.format("%Y-%m-%d %H:%M:%S"));
+            sleep(Duration::from_secs(1));
+            local = Local::now();
+            println!("{}", local.format("%Y-%m-%e %H:%M:%S"));
+        }
     }
 }
