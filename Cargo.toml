@@ -14,3 +14,5 @@ edition = "2018"
 ferris-says = "0.1"
 rand = "0.4.0"
 rust-crypto = "0.2"
+chrono = "0.4"
+
