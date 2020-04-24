@@ -219,7 +219,8 @@ pub mod match_test {
             // Could `match` 1 ..= 12 directly but then what age
             // would the child be? Instead, bind to `n` for the
             // sequence of 1 ..= 12. Now the age can be reported.
-            n @ 1..=12 => println!("I'm a child of age {:?}", n),
+            n if n < 5 => println!("I'm a baby of age {:?}", n),
+            n @ 5..=12 => println!("I'm a child of age {:?}", n),
             n @ 13..=19 => println!("I'm a teen of age {:?}", n),
             // Nothing bound. Return the result.
             n => println!("I'm an old person of age {:?}", n),
@@ -233,10 +234,113 @@ pub mod match_test {
             // Got `Some` variant, match if its value, bound to `n`,
             // is equal to 42.
             Some(n @ 42) => println!("The Answer: {}!", n),
-            // Match any other number.
+            Some(n @ 32..=41) => println!("The Range Answer: {}!", n),
             Some(n) => println!("Not interesting... {}", n),
+            // Match any other number.
             // Match anything else (`None` variant).
             _ => (),
+        }
+    }
+
+    #[test]
+    fn if_let() {
+        let some = Some(10);
+        match some {
+            Some(i) => println!("{}", i),
+            None => {}
+        }
+
+        if let Some(i) = some {
+            println!("i {}", i)
+        } else {
+            println!("error")
+        }
+
+        let number = Some(7);
+        let letter: Option<i32> = None;
+        let emoticon: Option<i32> = None;
+
+        if let Some(i) = number {
+            println!("Matched {:?}!", i);
+        }
+
+        if let Some(i) = letter {
+            println!("Matched {:?}!", i);
+        } else {
+            println!("Didn't match a number. Let's go with a letter!");
+        }
+
+        let i_like_letters = false;
+
+        if let Some(i) = emoticon {
+            println!("Matched {:?}!", i);
+        } else if i_like_letters {
+            println!("Didn't match a number. Let's go with a letter!");
+        } else {
+            println!("I don't like letters. Let's go with an emoticon :)!");
+        }
+
+        #[derive(Debug, PartialEq)]
+        enum Foo {
+            Bar,
+            Baz,
+            Qux(u32),
+        }
+
+        let a = Foo::Bar;
+        let b = Foo::Baz;
+        let c = Foo::Qux(100);
+        let d = Foo::Qux(rand::thread_rng().gen_range(0, 30));
+
+        if let Foo::Bar = a {
+            println!("a is foobar");
+        }
+
+        if let Foo::Bar = b {
+            println!("b is foobar");
+        }
+
+        if let Foo::Qux(value) = c {
+            println!("c is {}", value);
+        }
+
+        if let Foo::Qux(value @ 100) = c {
+            println!("c is one hundred {} ", value);
+        }
+
+        if let Foo::Qux(value @ 0..=100) = Foo::Qux(10) {
+            println!("c is one hundred {} ", value);
+        }
+
+        if let Foo::Qux(value @ 0..=10) = d {
+            println!("d is 0 ~{}~ 10 ", value);
+        } else if let Foo::Qux(value @ 10..=20) = d {
+            println!("d is 10 ~{}~ 20 ", value);
+        } else if let Foo::Qux(value @ 20..=30) = d {
+            println!("d is 20 ~{}~ 30 ", value);
+        } else {
+            println!("none {:#?}", d);
+        }
+
+        // Variable a matches Foo::Bar
+        if Foo::Bar == a {
+            // ^-- this causes a compile-time error. Use `if let` instead.
+            println!("a is foobar");
+        }
+    }
+
+    #[test]
+    fn while_let() {
+        let mut optional = Some(0);
+
+        while let Some(i) = optional {
+            if i > 9 {
+                println!("Greater than 9, quit!");
+                optional = None;
+            } else {
+                println!("`i` is `{:?}`. Try again.", i);
+                optional = Some(i + 1);
+            }
         }
     }
 }
