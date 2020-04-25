@@ -1,7 +1,5 @@
 pub mod string {
     use std::borrow::Cow;
-    use std::ops::Add;
-    use std::string::FromUtf8Error;
 
     #[test]
     fn new() {
@@ -81,5 +79,98 @@ pub mod string {
         let x = string.as_mut_str();
         x.make_ascii_uppercase();
         println!("{}", string)
+    }
+
+    #[test]
+    fn push_str() {
+        let mut string = String::from("hello");
+        string.push_str(" world");
+        println!("{}", string)
+    }
+
+    #[test]
+    fn reserve() {
+        let mut string = String::from("hello world");
+        println!("capacity {}", string.capacity()); //11
+        println!("len {}", string.len()); //11
+        string.reserve(8);
+        println!("{}", string);
+        println!("capacity {}", string.capacity()); //22
+        println!("len {}", string.len()); //11
+        string.reserve(15);
+        println!("capacity {}", string.capacity()); //44
+        println!("len {}", string.len()); //11
+    }
+
+    #[test]
+    fn reserve_exact() {
+        let mut string = String::from("hello world");
+        println!("capacity {}", string.capacity()); //11
+        println!("len {}", string.len()); //11
+        string.reserve_exact(8);
+        println!("{}", string);
+        println!("capacity {}", string.capacity()); //19
+        println!("len {}", string.len()); //11
+        string.reserve_exact(15);
+        println!("capacity {}", string.capacity()); //16
+        println!("len {}", string.len()); //11
+    }
+
+    #[test]
+    fn shrink_to_fit() {
+        let mut string = String::with_capacity(40);
+        println!("capacity {}", string.capacity()); // 40
+        println!("len {}", string.len()); //0
+        string.push_str("hello world");
+        println!("capacity {}", string.capacity()); //40
+        println!("len {}", string.len()); //11
+        string.shrink_to_fit();
+        println!("capacity {}", string.capacity()); //11
+        println!("len {}", string.len()); //11
+    }
+
+    #[test]
+    fn truncate() {
+        let mut string = String::from("hello world");
+        println!("{}", string); //hello world
+        println!("len {}", string.len()); //11
+        string.truncate(5);
+        println!("{}", string); //hello
+        println!("len {}", string.len()); //5
+    }
+
+    #[test]
+    fn pop() {
+        let mut string = String::from("hello world");
+        println!("{}", string);
+        println!("{:?}", string.pop());
+        println!("{}", string.pop().unwrap());
+        println!("{}", string);
+        while let Some(i) = string.pop() {
+            if i != ' ' {
+                print!("{}", i)
+            }
+        }
+    }
+
+    #[test]
+    fn remove() {
+        let mut string = String::from("hello world");
+        while string.is_empty() == false {
+            println!("{}", string);
+            string.remove(string.len() - 1);
+        }
+    }
+
+    #[test]
+    fn retain() {
+        let mut s = String::from("abcde");
+        let keep = [false, true, true, false, true];
+        let mut i = 0;
+        s.retain(|_| (keep[i], i += 1).0);
+        println!("{}", s);
+        let mut str = "rust golang".to_owned();
+        str.retain(|c| c != ' ');
+        println!("{}", str);
     }
 }
