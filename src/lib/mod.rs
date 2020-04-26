@@ -1,4 +1,5 @@
 pub mod box_test;
+pub mod char;
 pub mod chrono;
 pub mod env;
 pub mod rand;
