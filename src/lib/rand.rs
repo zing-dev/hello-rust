@@ -1,10 +1,10 @@
 pub mod rand {
     use rand::Rng;
 
-    #[warn(unused_doc_comments)]
     #[test]
     fn thread_rng() {
         let mut rng = rand::thread_rng();
+        #[allow(unused_doc_comments)]
         /**
         ThreadRng {
             rng: RefCell {

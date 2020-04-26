@@ -58,7 +58,7 @@ pub mod vec {
         vec.push(3);
         vec.push(4);
         println!("{:?}", vec);
-        let mut x = vec.as_mut_slice();
+        let x = vec.as_mut_slice();
         x[0] = 10_u8;
         println!("{:?}", x);
     }
