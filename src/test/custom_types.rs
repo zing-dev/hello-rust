@@ -35,9 +35,11 @@ fn struct_test() {
 
     let Point {
         x: top_edge,
-        y: left_edge,
-    }: Point = point;
+        y: ref left_edge,
+    } = point;
     println!("{},{}", top_edge, left_edge);
+
+    let Point { x: ref_to_x, y: a } = point;
 
     let _unit = Unit;
     // println!("{:#?}", _unit);
