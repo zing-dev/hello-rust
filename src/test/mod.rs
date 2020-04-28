@@ -7,5 +7,6 @@ pub mod lifetime;
 pub mod match_test;
 pub mod primitives;
 pub mod scope;
+pub mod trait_test;
 pub mod types;
 pub mod variable_bindings;
