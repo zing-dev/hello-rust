@@ -9,6 +9,9 @@ edition = "2018"
 #doc=false
 #name= "app"
 #path="src/main.rs"
+[[example]]
+name = "example"
+
 
 [dependencies]
 ferris-says = "0.1"

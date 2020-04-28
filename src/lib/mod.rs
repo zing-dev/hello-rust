@@ -2,6 +2,7 @@ pub mod box_test;
 pub mod char;
 pub mod chrono;
 pub mod env;
+pub mod fs;
 pub mod rand;
 pub mod slice;
 pub mod string;
