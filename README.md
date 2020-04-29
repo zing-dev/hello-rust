@@ -1,2 +1,11 @@
 # hello-rust
-rust 
+
+> learn rust 
+
+```rust
+
+fn main(){
+    println!("Hello World!");
+}
+
+```
