@@ -1,5 +1,6 @@
 pub mod open_options {
     use std::fs::OpenOptions;
+    use std::io::{Read, Seek, SeekFrom, Write};
 
     #[test]
     fn new() {
@@ -10,5 +11,32 @@ pub mod open_options {
         options.read(true);
         println!("{:?}", options);
         options.write(true);
+    }
+
+    #[test]
+    fn open() {
+        if let Ok(mut f) = OpenOptions::new()
+            .truncate(true)
+            .write(true)
+            .read(true)
+            .open("a.txt")
+        {
+            println!("open success!");
+            if let Ok(size) = f.write("hello world".as_bytes()) {
+                println!("size : {}", size);
+                let mut buf = [0; 256];
+                f.seek(SeekFrom::Start(0));
+                if let Ok(size) = f.read(&mut buf) {
+                    println!("size : {}", size);
+                    println!("{:?}", &buf[0..size]);
+                    println!(
+                        "content : {:?}",
+                        buf.iter().filter(|&&i| i != 0).collect::<Vec<&u8>>()
+                    );
+                    let str = String::from_utf8_lossy(&buf).to_string();
+                    println!("{}", str)
+                }
+            }
+        }
     }
 }
