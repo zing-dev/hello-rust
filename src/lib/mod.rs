@@ -5,6 +5,7 @@ pub mod env;
 pub mod ffi;
 pub mod fs;
 pub mod io;
+pub mod net;
 pub mod path;
 pub mod rand;
 pub mod slice;
