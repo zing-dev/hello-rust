@@ -1,4 +1,5 @@
 #[cfg(test)]
+#[allow(unused_variables)]
 pub mod io {
     use std::io;
     use std::io::{Read, Write};
@@ -16,7 +17,10 @@ pub mod io {
         assert_eq!(io::copy(&mut r, &mut w).unwrap(), 4);
         let mut r = io::repeat(0).take(1 << 17);
         //assert_eq!(io::copy(&mut r , &mut w ).unwrap(), 1 << 17);
-        assert_eq!(io::copy(&mut r as &mut dyn Read, &mut w as &mut dyn Write).unwrap(), 1 << 17);
+        assert_eq!(
+            io::copy(&mut r as &mut dyn Read, &mut w as &mut dyn Write).unwrap(),
+            1 << 17
+        );
         Ok(())
     }
 
@@ -25,7 +29,7 @@ pub mod io {
         let mut buffer = String::new();
         io::empty().read_to_string(&mut buffer).unwrap();
         assert!(buffer.is_empty());
-        let mut buffer2 = String::from("hello world");
+        let buffer2 = String::from("hello world");
     }
 
     #[test]

@@ -48,7 +48,7 @@ pub mod read_dir {
     #[test]
     fn test3() {
         //遍历
-        if let Ok(mut dir) = fs::read_dir(".") {
+        if let Ok(dir) = fs::read_dir(".") {
             for result in dir {
                 if let Ok(entry) = result {
                     let name = entry.file_name();
@@ -72,7 +72,7 @@ pub mod read_dir {
         fs::read_dir(".")?
             .map(|res| {
                 res.map(|e| {
-                    let buf = e.path();
+                    let _buf = e.path();
                     println!("{:?} {:?}", e.file_name(), e.path())
                 })
             })

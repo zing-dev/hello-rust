@@ -5,7 +5,7 @@ fn tuples() {
         (1, y) => println!("y {}", y),
         (0, y) => println!("y {}", y),
         (x, 1) => println!("x {}", x),
-        (x, y) => println!("{},{}", x, y)
+        (x, y) => println!("{},{}", x, y),
     }
 }
 
@@ -23,7 +23,7 @@ fn enums() {
     match r {
         Language::Rust(s, i) => println!("{},{}", s, i),
         Language::C(s, i) => println!("{},{}", s, i),
-        _ => println!("none")
+        _ => println!("none"),
     }
 
     enum Color {
@@ -43,16 +43,14 @@ fn enums() {
         Color::Red => println!("The color is Red!"),
         Color::Blue => println!("The color is Blue!"),
         Color::Green => println!("The color is Green!"),
-        Color::RGB(r, g, b) =>
-            println!("Red: {}, green: {}, and blue: {}!", r, g, b),
-        Color::HSV(h, s, v) =>
-            println!("Hue: {}, saturation: {}, value: {}!", h, s, v),
-        Color::HSL(h, s, l) =>
-            println!("Hue: {}, saturation: {}, lightness: {}!", h, s, l),
-        Color::CMY(c, m, y) =>
-            println!("Cyan: {}, magenta: {}, yellow: {}!", c, m, y),
-        Color::CMYK(c, m, y, k) =>
-            println!("Cyan: {}, magenta: {}, yellow: {}, key (black): {}!", c, m, y, k),
+        Color::RGB(r, g, b) => println!("Red: {}, green: {}, and blue: {}!", r, g, b),
+        Color::HSV(h, s, v) => println!("Hue: {}, saturation: {}, value: {}!", h, s, v),
+        Color::HSL(h, s, l) => println!("Hue: {}, saturation: {}, lightness: {}!", h, s, l),
+        Color::CMY(c, m, y) => println!("Cyan: {}, magenta: {}, yellow: {}!", c, m, y),
+        Color::CMYK(c, m, y, k) => println!(
+            "Cyan: {}, magenta: {}, yellow: {}, key (black): {}!",
+            c, m, y, k
+        ),
     }
 }
 
@@ -97,6 +95,7 @@ fn pointers() {
     }
 
     // Use `ref mut` similarly.
+    #[allow(unreachable_patterns)]
     match mut_value {
         a => println!("{}", a),
         ref a => println!("{}", a),

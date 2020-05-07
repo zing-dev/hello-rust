@@ -38,7 +38,7 @@ pub mod box_test {
             Ordering::Greater => println!("greater"),
         }
 
-        let mut x = Box::from([1_u8, 2, 3]);
+        let x = Box::from([1_u8, 2, 3]);
         println!("{:?}", x);
         println!("{}", x.first().unwrap());
     }

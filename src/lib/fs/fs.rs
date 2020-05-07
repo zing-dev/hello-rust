@@ -1,6 +1,6 @@
 mod fs {
-    use std::fs;
     use std::fs::File;
+    use std::{fs, io};
 
     #[test]
     fn create_dir() {
@@ -40,29 +40,33 @@ mod fs {
     }
 
     #[test]
-    fn remove_dir() {
-        fs::create_dir("test/new2");
+    fn remove_dir() -> io::Result<()> {
+        fs::create_dir("test/new2")?;
         let result = fs::remove_dir("test/new2");
         match result {
             Ok(_) => println!("remove_dir test/new2 success!"),
             Err(err) => println!("remove_dir test/new2 error:{}", err),
-        }
+        };
+        Ok(())
     }
 
     #[test]
-    fn remove_dir_all() {
-        fs::create_dir_all("/test/test/test");
-        fs::remove_dir_all("/test/test/test");
+    fn remove_dir_all() -> io::Result<()> {
+        fs::create_dir_all("/test/test/test")?;
+        fs::remove_dir_all("/test/test/test")?;
+        Ok(())
     }
 
     #[test]
-    fn remove_file() {
-        fs::remove_file("a.txt");
+    fn remove_file() -> io::Result<()> {
+        fs::remove_file("a.txt")?;
+        Ok(())
     }
 
     #[test]
-    fn hard_link() {
-        File::create("test/a.txt");
-        fs::hard_link("test/a.txt", "test/b.txt");
+    fn hard_link() -> io::Result<()> {
+        File::create("test/a.txt")?;
+        fs::hard_link("test/a.txt", "test/b.txt")?;
+        Ok(())
     }
 }

@@ -39,7 +39,10 @@ fn struct_test() {
     } = point;
     println!("{},{}", top_edge, left_edge);
 
-    let Point { x: ref_to_x, y: a } = point;
+    let Point {
+        x: _ref_to_x,
+        y: _a,
+    } = point;
 
     let _unit = Unit;
     // println!("{:#?}", _unit);
@@ -118,7 +121,7 @@ enum Work {
 
 enum Language {
     Rust,
-    Golang,
+    Go,
     Java,
     C,
     Cpp,
@@ -146,13 +149,13 @@ fn use_test() {
 
         match work {
             Civilian => println!("civilian work!"),
-            Work => println!("soldiers fight"),
+            _work => println!("soldiers fight"),
         }
 
         let learn = Language::Rust;
         match learn {
             Language::Rust => println!("rust"),
-            Language::Golang => println!("golang"),
+            Language::Go => println!("golang"),
             Language::Java => println!("java"),
             Language::C => println!("c"),
             Language::Cpp => println!("cpp"),

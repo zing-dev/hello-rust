@@ -1,4 +1,6 @@
 #[cfg(test)]
+#[allow(unused_variables)]
+#[allow(unused_must_use)]
 pub mod macros {
     use core::fmt::Write as CoreFmtWrite;
     use std::fmt;
@@ -114,7 +116,7 @@ pub mod macros {
     }
 
     #[test]
-    fn write() {
+    fn write() -> io::Result<()> {
         fn write() -> std::io::Result<()> {
             let mut w = Vec::new();
             write!(&mut w, "test")?;
@@ -122,7 +124,7 @@ pub mod macros {
             assert_eq!(w, b"testformatted arguments");
             Ok(())
         }
-        write();
+        write()?;
 
         let mut s = String::new();
         let mut v = Vec::new();
@@ -140,7 +142,8 @@ pub mod macros {
         }
         let mut m = Example {};
         write!(&mut m, "Hello World").expect("Not written");
-        println!("{:?}", m)
+        println!("{:?}", m);
+        Ok(())
     }
 
     #[test]

@@ -11,27 +11,40 @@ impl Rectangle {
 }
 
 #[cfg(test)]
-mod tests{
+#[allow(unused_variables)]
+mod tests {
     use super::*;
 
     #[test]
     fn larger_can_hold_smaller() {
-        let larger = Rectangle { width: 8, height: 7 };
-        let smaller = Rectangle { width: 5, height: 1 };
+        let larger = Rectangle {
+            width: 8,
+            height: 7,
+        };
+        let smaller = Rectangle {
+            width: 5,
+            height: 1,
+        };
         assert!(larger.can_hold(&smaller));
     }
 
     #[test]
     fn larger_can_hold_smaller2() {
-        let larger = Rectangle { width: 8, height: 7 };
-        let smaller = Rectangle { width: 5, height: 1 };
+        let larger = Rectangle {
+            width: 8,
+            height: 7,
+        };
+        let smaller = Rectangle {
+            width: 5,
+            height: 1,
+        };
         assert!(smaller.can_hold(&smaller));
     }
 
     #[test]
-    fn test_test(){
+    fn test_test() {
         println!("begin......");
-        println!("{}",true);
+        println!("{}", true);
         println!("end......");
     }
 

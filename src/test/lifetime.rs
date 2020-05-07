@@ -271,6 +271,7 @@ pub mod lifetime {
         }
     }
 
+    #[allow(unused_variables)]
     mod static_test {
         use std::fmt::Debug;
 

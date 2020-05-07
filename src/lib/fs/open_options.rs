@@ -25,7 +25,10 @@ pub mod open_options {
             if let Ok(size) = f.write("hello world".as_bytes()) {
                 println!("size : {}", size);
                 let mut buf = [0; 256];
-                f.seek(SeekFrom::Start(0));
+                match f.seek(SeekFrom::Start(0)) {
+                    Ok(_) => {}
+                    Err(_) => {}
+                }
                 if let Ok(size) = f.read(&mut buf) {
                     println!("size : {}", size);
                     println!("{:?}", &buf[0..size]);

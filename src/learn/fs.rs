@@ -1,4 +1,5 @@
 #[cfg(test)]
+#[allow(unused_variables)]
 pub mod fs {
     use std::any::Any;
     use std::fs;
@@ -35,7 +36,7 @@ pub mod fs {
 
     #[test]
     fn create() -> std::io::Result<()> {
-        let mut f = File::create("foo.txt")?;
+        let f = File::create("foo.txt")?;
         Ok(())
     }
 
@@ -81,14 +82,14 @@ pub mod fs {
     }
 
     fn set_len() -> std::io::Result<()> {
-        let mut f = File::create("foo.txt")?;
+        let f = File::create("foo.txt")?;
         f.set_len(100)?;
         Ok(())
     }
 
     #[test]
     fn metadata() -> std::io::Result<()> {
-        let mut f = File::open("foo.txt")?;
+        let f = File::open("foo.txt")?;
         let metadata = f.metadata()?;
         assert_eq!(metadata.is_dir(), false);
         assert_eq!(metadata.is_file(), true);
@@ -105,7 +106,7 @@ pub mod fs {
 
     #[test]
     fn try_clone() -> std::io::Result<()> {
-        let mut file = File::open("foo.txt")?;
+        let file = File::open("foo.txt")?;
         let file_copy = file.try_clone()?;
         println!("{:?}", file_copy);
         Ok(())
@@ -115,7 +116,7 @@ pub mod fs {
     fn set_permissions() -> std::io::Result<()> {
         use std::fs::File;
         let file = File::open("foo.txt")?;
-        let mut perms = file.metadata()?.permissions();
+        let perms = file.metadata()?.permissions();
         //perms.set_readonly(false);
         //file.set_permissions(perms)?;
         Ok(())
@@ -243,7 +244,7 @@ pub mod fs {
 
         #[test]
         fn readonly() -> std::io::Result<()> {
-            let mut f = File::create("foo.txt")?;
+            let f = File::create("foo.txt")?;
             let metadata = f.metadata()?;
             assert_eq!(false, metadata.permissions().readonly());
             Ok(())
@@ -353,6 +354,7 @@ pub mod fs {
     }
 
     #[test]
+    #[allow(unused_must_use)]
     fn remove_file() -> std::io::Result<()> {
         fs::write("a.txt", "test");
         fs::remove_file("a.txt")?;

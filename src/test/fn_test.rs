@@ -24,7 +24,7 @@ pub mod fn_test {
 
         #[test]
         fn capture() {
-            let mut name = "zing";
+            let name = "zing";
             let print = || println!("name is {}", name);
             print();
 

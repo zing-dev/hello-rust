@@ -1,3 +1,4 @@
+#[allow(unused_must_use)]
 pub mod dir_entry {
     use std::fs::read_dir;
     use std::{io, result};

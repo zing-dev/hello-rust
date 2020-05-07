@@ -1,37 +1,33 @@
 #[cfg(test)]
+#[allow(unused_variables)]
 mod net {
-    use std::io::{Read, Write, BufReader, BufWriter, BufRead};
-    use std::net::{TcpStream, TcpListener};
+    use std::io::{BufRead, BufReader, BufWriter, Read, Write};
+    use std::net::{TcpListener, TcpStream};
     use std::thread::sleep;
     use std::time::Duration;
-    use std::thread;
+    use std::{io, thread};
 
     #[test]
     fn string() {
-        let mut sparkle_heart = vec![70];
+        let sparkle_heart = vec![70];
         println!("{}", String::from_utf8(sparkle_heart).unwrap());
         println!("{}", String::from_utf8(vec![70]).unwrap());
     }
 
     #[test]
-    fn client() {
+    #[allow(unused_must_use)]
+    fn client() -> io::Result<()> {
         let mut stream = match TcpStream::connect("127.0.0.1:8080") {
-            Ok(stream) => {
-                stream
-            }
-            Err(err) => {
-                panic!(err)
-            }
+            Ok(stream) => stream,
+            Err(err) => panic!(err),
         };
-        stream.set_read_timeout(Some(Duration::new(0, 0)));
-        stream.set_write_timeout(Some(Duration::new(0, 0)));
+        stream.set_read_timeout(Some(Duration::new(0, 0)))?;
+        stream.set_write_timeout(Some(Duration::new(0, 0)))?;
 
         loop {
-            #[derive(Debug)]
-                let mut buf = [66, 67, 68, 69, 70];
-            #[derive(Debug)]
-                let mut buf2: [u8; 100] = [0; 100];
-            stream.write(&buf);
+            let buf = [66, 67, 68, 69, 70];
+            let mut buf2: [u8; 100] = [0; 100];
+            stream.write(&buf)?;
             let result = match stream.read(&mut buf2) {
                 Ok(length) => {
                     println!("len {}", length);

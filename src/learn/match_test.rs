@@ -12,7 +12,7 @@ pub fn match_test() {
         2 | 3 | 5 | 7 | 11 => println!("This is a prime"),
         // Match an inclusive range
         13...39 => println!("A teen"),
-        39..=90 => println!("B teen"),
+        40..=90 => println!("B teen"),
         // Handle the rest of cases
         _ => println!("Ain't special"),
     }
@@ -63,7 +63,7 @@ pub fn match_tuples() {
 #[allow(unused_variables)]
 pub fn match_enums() {
     // `allow` required to silence warnings because only
-// one variant is used.
+    // one variant is used.
     #[allow(dead_code)]
     enum Color {
         // These 3 are specified solely by their name.
@@ -88,16 +88,14 @@ pub fn match_enums() {
         Color::Red => println!("The color is Red!"),
         Color::Blue => println!("The color is Blue!"),
         Color::Green => println!("The color is Green!"),
-        Color::RGB(r, g, b) =>
-            println!("Red: {}, green: {}, and blue: {}!", r, g, b),
-        Color::HSV(h, s, v) =>
-            println!("Hue: {}, saturation: {}, value: {}!", h, s, v),
-        Color::HSL(h, s, l) =>
-            println!("Hue: {}, saturation: {}, lightness: {}!", h, s, l),
-        Color::CMY(c, m, y) =>
-            println!("Cyan: {}, magenta: {}, yellow: {}!", c, m, y),
-        Color::CMYK(c, m, y, k) =>
-            println!("Cyan: {}, magenta: {}, yellow: {}, key (black): {}!", c, m, y, k),
+        Color::RGB(r, g, b) => println!("Red: {}, green: {}, and blue: {}!", r, g, b),
+        Color::HSV(h, s, v) => println!("Hue: {}, saturation: {}, value: {}!", h, s, v),
+        Color::HSL(h, s, l) => println!("Hue: {}, saturation: {}, lightness: {}!", h, s, l),
+        Color::CMY(c, m, y) => println!("Cyan: {}, magenta: {}, yellow: {}!", c, m, y),
+        Color::CMYK(c, m, y, k) => println!(
+            "Cyan: {}, magenta: {}, yellow: {}, key (black): {}!",
+            c, m, y, k
+        ),
         // Don't need another arm because all variants have been examined
     }
 }
@@ -254,8 +252,7 @@ pub fn match_bindings() {
 
 #[allow(unused_variables)]
 pub fn if_let() {
-
-// Make `optional` of type `Option<i32>`
+    // Make `optional` of type `Option<i32>`
     let optional = Some(7);
 
     match optional {
@@ -264,9 +261,8 @@ pub fn if_let() {
             // ^ Needed 2 indentations just so we could destructure
             // `i` from the option.
         }
-        _ => {}
-        // ^ Required because `match` is exhaustive. Doesn't it seem
-        // like wasted space?
+        _ => {} // ^ Required because `match` is exhaustive. Doesn't it seem
+                // like wasted space?
     };
     // All have type `Option<i32>`
     let number = Some(7);
@@ -292,8 +288,8 @@ pub fn if_let() {
 
     if let Some(i) = emoticon {
         println!("Matched {:?}!", i);
-        // Destructure failed. Evaluate an `else if` condition to see if the
-        // alternate failure branch should be taken:
+    // Destructure failed. Evaluate an `else if` condition to see if the
+    // alternate failure branch should be taken:
     } else if i_like_letters {
         println!("Didn't match a number. Let's go with a letter!");
     } else {
@@ -340,7 +336,7 @@ pub fn while_let() {
     // Make `optional` of type `Option<i32>`
     let mut optional = Some(0);
 
-// Repeatedly try this test.
+    // Repeatedly try this test.
     loop {
         match optional {
             // If `optional` destructures, evaluate the block.
@@ -355,8 +351,9 @@ pub fn while_let() {
                 // ^ Requires 3 indentations!
             }
             // Quit the loop when the destructure fails:
-            _ => { break; }
-            // ^ Why should this be required? There must be a better way!
+            _ => {
+                break;
+            } // ^ Why should this be required? There must be a better way!
         }
     }
 

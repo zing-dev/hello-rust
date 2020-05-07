@@ -31,7 +31,7 @@ pub mod slice {
     fn first_mut() {
         let x = &mut [0, 1, 2];
         let ref mut y = [0, 1, 2];
-        let mut z = &[0, 1, 2];
+        let z = &[0, 1, 2];
         //let &mut a = [0, 1, 2]; //expected array `[{integer}; 3]`, found `&mut _`
         println!("{}", x == y); //true
         println!("{}", x == z); //true

@@ -1,14 +1,16 @@
 #[test]
+#[allow(unused_variables)]
+#[allow(unused_assignments)]
 fn primitives() {
     // Variables can be type annotated.
     let _logical: bool = true;
 
-    let _a_float: f64 = 1.0;  // Regular annotation
+    let _a_float: f64 = 1.0; // Regular annotation
     let _an_integer = 5i32; // Suffix annotation
 
     // Or a default will be used.
     let _default_float = 3.0; // `f64`
-    let _default_integer = 7;   // `i32`
+    let _default_integer = 7; // `i32`
 
     // A type can also be inferred from context
     let mut inferred_type = 12; // Type i64 is inferred from another line
@@ -61,12 +63,10 @@ fn tuples() {
     #[derive(Debug)]
     struct Matrix(f32, f32, f32, f32);
 
-
     // A tuple with a bunch of different types
-    let long_tuple = (1u8, 2u16, 3u32, 4u64,
-                      -1i8, -2i16, -3i32, -4i64,
-                      0.1f32, 0.2f64,
-                      'a', true);
+    let long_tuple = (
+        1u8, 2u16, 3u32, 4u64, -1i8, -2i16, -3i32, -4i64, 0.1f32, 0.2f64, 'a', true,
+    );
 
     // Values can be extracted from the tuple using tuple indexing
     println!("long tuple first value: {}", long_tuple.0);
@@ -79,7 +79,7 @@ fn tuples() {
     println!("tuple of tuples: {:?}", tuple_of_tuples);
 
     // But long Tuples cannot be printed except length 12
-    let too_long_tuple = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, /*13*/);
+    let too_long_tuple = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 /*13*/);
     println!("too long tuple: {:?}", too_long_tuple);
 
     let pair = (1, true);
@@ -89,7 +89,7 @@ fn tuples() {
 
     // To create one element tuples, the comma is required to tell them apart
     // from a literal surrounded by parentheses
-    println!("one element tuple: {:?}", (5u32, ));
+    println!("one element tuple: {:?}", (5u32,));
     println!("just an integer: {:?}", (5u32));
 
     //tuples can be destructured to create bindings

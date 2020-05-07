@@ -1,3 +1,4 @@
+#[allow(unused_variables)]
 pub mod file {
     use std::fs::{remove_file, File};
     use std::io::Error;

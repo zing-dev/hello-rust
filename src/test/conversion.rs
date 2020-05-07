@@ -45,7 +45,7 @@ pub mod conversion {
     }
 
     fn open_and_parse_file(file_name: &str) -> Result<i32, CliError> {
-        let mut contents = fs::read_to_string(&file_name)?;
+        let contents = fs::read_to_string(&file_name)?;
         println!("{}", contents);
         let num: i32 = contents.trim().parse()?;
         Ok(num)

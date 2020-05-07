@@ -3,22 +3,7 @@ pub mod rand {
 
     #[test]
     fn thread_rng() {
-        let mut rng = rand::thread_rng();
-        #[allow(unused_doc_comments)]
-        /**
-        ThreadRng {
-            rng: RefCell {
-                value: ReseedingRng {
-                    rng: StdRng {
-                        rng: Isaac64Rng {},
-                    },
-                    generation_threshold: 32768,
-                    bytes_generated: 0,
-                    reseeder: ThreadRngReseeder,
-                },
-            },
-        }
-        */
+        let rng = rand::thread_rng();
         println!("{:#?}", rng)
     }
 

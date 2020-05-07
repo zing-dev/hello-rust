@@ -1,3 +1,4 @@
+#[allow(unused_variables)]
 pub mod chrono {
     use std::thread::sleep;
     use std::time::Duration;
@@ -42,20 +43,19 @@ pub mod chrono {
 
     pub mod local {
         use chrono::{Local, NaiveTime};
-        use std::time::Duration;
         use std::thread::sleep;
+        use std::time::Duration;
 
         #[test]
-        fn today(){
+        fn today() {
             let local = Local::today();
             println!("{}", local);
             println!("{}", local.format("%Y-%m-%e"));
             let datetime = local.and_hms(1, 2, 3);
             println!("{}", datetime.format("%Y-%m-%e %H:%M:%S"));
             let option = local.and_time(NaiveTime::from_hms(1, 2, 3));
-            println!("{}",option.unwrap());
+            println!("{}", option.unwrap());
         }
-
 
         #[test]
         fn now() {
