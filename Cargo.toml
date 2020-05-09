@@ -12,6 +12,10 @@ edition = "2018"
 [[example]]
 name = "example"
 
+[workspace]
+members = [
+    "demo/hello-world"
+]
 
 [dependencies]
 ferris-says = "0.1"
