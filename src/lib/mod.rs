@@ -10,5 +10,6 @@ pub mod path;
 pub mod rand;
 pub mod slice;
 pub mod string;
+pub mod thread;
 pub mod time;
 pub mod vec;
