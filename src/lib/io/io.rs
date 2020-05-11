@@ -143,7 +143,7 @@ pub mod read {
     #[test]
     fn chain() -> io::Result<()> {
         let f1 = File::open(FILENAME)?;
-        let f2 = File::open("bar.txt")?;
+        let f2 = File::open("test/bar.txt")?;
 
         let mut handle = f1.chain(f2);
         let mut buffer = String::new();
@@ -151,6 +151,7 @@ pub mod read {
         // read the value into a String. We could use any Read method here,
         // this is just one example.
         handle.read_to_string(&mut buffer)?;
+        println!("{}", buffer);
         Ok(())
     }
 
@@ -158,11 +159,10 @@ pub mod read {
     fn take() -> io::Result<()> {
         let f = File::open(FILENAME)?;
         let mut buffer = [0; 5];
-
         // read at most five bytes
         let mut handle = f.take(5);
-
         handle.read(&mut buffer)?;
+        println!("{:?}", buffer);
         Ok(())
     }
 }

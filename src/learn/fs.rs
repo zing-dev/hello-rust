@@ -400,6 +400,7 @@ pub mod fs {
         Ok(())
     }
 
+    #[test]
     fn create_dir_all() -> std::io::Result<()> {
         fs::create_dir_all("test/dir")?;
         Ok(())

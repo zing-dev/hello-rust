@@ -73,4 +73,79 @@ pub mod char_test {
         println!("{}", 'あ'.len_utf8()); //3
         println!("{}", '😒'.len_utf8()); //4
     }
+
+    #[test]
+    fn len_utf16() {
+        let n = 'ß'.len_utf16();
+        assert_eq!(n, 1);
+
+        let len = '💣'.len_utf16();
+        assert_eq!(len, 2);
+    }
+
+    #[test]
+    fn encode_utf8() {
+        let mut b = [0; 2];
+        let result = 'ß'.encode_utf8(&mut b);
+        //println!("{:?}", b); //[195, 159]
+        println!("{}", result);
+        println!("{}", result.len());
+    }
+
+    #[test]
+    fn encode_utf16() {
+        let mut b = [0; 1];
+        let result = 'ß'.encode_utf16(&mut b);
+        //println!("{:?}", b); //[195, 159]
+        println!("{:?}", result);
+        println!("{}", result.len());
+    }
+
+    #[test]
+    fn is_alphabetic() {
+        //字母顺序
+        assert!('a'.is_alphabetic());
+        assert!('京'.is_alphabetic());
+
+        let c = '💝';
+        // love is many things, but it is not alphabetic
+        assert!(!c.is_alphabetic());
+    }
+
+    #[test]
+    fn is_lowercase() {
+        assert!('a'.is_lowercase());
+        assert!('δ'.is_lowercase());
+        assert!(!'A'.is_lowercase());
+        assert!(!'Δ'.is_lowercase());
+    }
+
+    #[test]
+    fn is_uppercase() {
+        assert!(!'a'.is_uppercase());
+        assert!(!'δ'.is_uppercase());
+        assert!('A'.is_uppercase());
+        assert!('Δ'.is_uppercase());
+    }
+
+    #[test]
+    fn is_whitespace() {
+        assert!(!'a'.is_whitespace());
+        assert!(' '.is_whitespace());
+        assert!('\t'.is_whitespace());
+        assert!(!'\0'.is_whitespace());
+    }
+
+    #[test]
+    fn to_lowercase() {
+        for c in 'İ'.to_lowercase() {
+            print!("{}", c);
+        }
+        println!();
+        println!("{:?}", 'A'.to_lowercase());
+        println!("{:?}", 'A'.to_lowercase().to_string());
+        println!("{:?}", 'İ'.to_lowercase()); //ToLowercase(Two('i', '\u{307}'))
+        println!("{}", "i\u{307}");
+        assert_eq!('İ'.to_lowercase().to_string(), "i\u{307}");
+    }
 }
