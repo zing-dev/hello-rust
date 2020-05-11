@@ -142,8 +142,8 @@ pub mod read {
 
     #[test]
     fn chain() -> io::Result<()> {
-        let mut f1 = File::open(FILENAME)?;
-        let mut f2 = File::open("bar.txt")?;
+        let f1 = File::open(FILENAME)?;
+        let f2 = File::open("bar.txt")?;
 
         let mut handle = f1.chain(f2);
         let mut buffer = String::new();
@@ -156,7 +156,7 @@ pub mod read {
 
     #[test]
     fn take() -> io::Result<()> {
-        let mut f = File::open(FILENAME)?;
+        let f = File::open(FILENAME)?;
         let mut buffer = [0; 5];
 
         // read at most five bytes
