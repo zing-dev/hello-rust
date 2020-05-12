@@ -31,7 +31,8 @@ fn interact<T: SerialPort>(port: &mut T) -> io::Result<()> {
     loop {
         match port.read(&mut buf[..]) {
             Ok(size) => {
-                println!("{:?}", &buf[0..size]);
+                println!("{}", String::from_utf8_lossy(&buf[0..size]));
+                // println!("{:?}", &buf[0..size]);
             }
             Err(_) => {}
         };
