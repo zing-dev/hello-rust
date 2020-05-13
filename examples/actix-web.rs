@@ -1,3 +1,5 @@
+use actix_http::KeepAlive;
+use actix_web::middleware::Logger;
 use actix_web::{get, web, App, HttpServer, Responder};
 use serde::Serialize;
 
@@ -28,8 +30,19 @@ async fn json() -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(hello).service(index).service(json))
-        .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    std::env::set_var("RUST_LOG", "actix_web=info");
+    println!("{}", std::env::var("RUST_LOG").unwrap());
+    env_logger::init();
+    HttpServer::new(|| {
+        App::new()
+            .wrap(Logger::default())
+            .wrap(Logger::new("%a %{User-Agent}i"))
+            .service(hello)
+            .service(index)
+            .service(json)
+    })
+    .keep_alive(KeepAlive::Timeout(10))
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }
