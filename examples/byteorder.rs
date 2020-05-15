@@ -2,6 +2,8 @@ use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use std::io;
 use std::io::Cursor;
 
+fn main() {}
+
 #[test]
 fn test() {
     let mut rdr = Cursor::new(vec![2, 5, 3, 0]);

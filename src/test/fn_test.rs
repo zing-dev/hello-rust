@@ -197,6 +197,117 @@ pub mod fn_test {
                 fn_mut();
                 fn_once();
             }
+
+            #[test]
+            fn run() {
+                let v = vec!["563913.060", "563913.080"];
+                let x: Vec<f32> = v.iter().map(|f| f.parse::<f32>().unwrap()).collect();
+                println!("{:?}", x);
+                println!("{}", "563913.060".parse::<f32>().unwrap());
+                println!("{}", "563913.090".parse::<f32>().unwrap());
+                println!("{}", "563913.050".parse::<f32>().unwrap());
+                println!("{}", "563913.100".parse::<f32>().unwrap());
+                println!("{}", "563913.060".parse::<f64>().unwrap());
+                println!("{}", "563913.090".parse::<f64>().unwrap());
+                println!("{}", "1.0001".parse::<f32>().unwrap());
+                println!("{}", "123456789.0001".parse::<f32>().unwrap());
+            }
+        }
+    }
+
+    mod fn_once {
+        use serde::export::fmt::{Debug, Display};
+
+        fn consume_with_relish<F: FnOnce() -> String>(func: F) {
+            // `func` consumes its captured variables, so it cannot be run more
+            // than once.
+            println!("Consumed: {}", func());
+            println!("Delicious!");
+            // Attempting to invoke `func()` again will throw a `use of moved
+            // value` error for `func`.
+            //func();
+        }
+
+        fn func<A, F>(f: F)
+        where
+            A: Display + Debug,
+            F: FnOnce() -> A,
+        {
+            println!("{:?}", f());
+            //println!("{:?}", f());
+        }
+
+        #[test]
+        fn test() {
+            let x = String::from("x");
+            let consume_and_return_x = move || x;
+            consume_with_relish(consume_and_return_x);
+
+            let i = 10;
+            let f = || i * i;
+            func(f);
+
+            let t = (10, 20);
+            let f2 = || t.0 * t.1;
+            func(f2);
+
+            let t2 = ("hello", " ", "word");
+            let f3 = move || t2.0.to_owned() + t2.1 + t2.2;
+            func(f3);
+
+            let x = String::from("x");
+            let f = move || x;
+            func(f);
+        }
+    }
+
+    mod fn_mut {
+        use std::ops::Add;
+
+        fn do_twice<F>(mut func: F)
+        where
+            F: FnMut(),
+        {
+            func();
+            func();
+            func();
+            func();
+        }
+
+        #[test]
+        fn test() {
+            let mut x: usize = 1;
+            {
+                let add_two_to_x = || x += 2;
+                do_twice(add_two_to_x);
+            }
+            // assert_eq!(x, 5);
+
+            x = 72;
+            let mut string = String::new();
+            let str = || {
+                // string.insert_str(x, "hello ");
+                //string.add("hello ");
+                string.push(x as u8 as char);
+                x += 1;
+            };
+            do_twice(str);
+            //do_twice(str);
+            println!("{}", string);
+        }
+    }
+    mod fn_test {
+        fn call_with_one<F>(func: F) -> usize
+        where
+            F: Fn(usize) -> usize,
+        {
+            func(1)
+        }
+
+        #[test]
+        fn test() {
+            let double = |x| x * 2;
+            assert_eq!(call_with_one(double), 2);
         }
     }
 }
