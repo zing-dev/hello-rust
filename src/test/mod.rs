@@ -4,6 +4,7 @@ pub mod flow_control;
 pub mod fn_test;
 pub mod hello_world;
 pub mod lifetime;
+pub mod macro_rules;
 pub mod match_test;
 pub mod primitives;
 pub mod scope;
