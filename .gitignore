@@ -2,3 +2,7 @@
 **/*.rs.bk
 
 .idea
+
+.run
+*.db
+.env

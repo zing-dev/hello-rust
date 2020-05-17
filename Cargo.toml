@@ -15,6 +15,7 @@ name = "example"
 [workspace]
 members = [
     "demo/hello-world",
+    "demo/socket2/quick-start",
     "demo/diesel/sqlite/getting_started_step_1"
 ]
 
