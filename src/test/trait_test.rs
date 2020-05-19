@@ -99,6 +99,7 @@ pub mod trait_test {
                 Inches((f / 2.54) as i32)
             }
         }
+
         // `Inches`, a tuple struct that can be printed
         #[derive(Debug, PartialEq, PartialOrd)]
         struct Inches(i32);
@@ -151,6 +152,7 @@ pub mod trait_test {
         use rand::Rng;
 
         struct Sheep {}
+
         struct Cow {}
 
         trait Animal {
@@ -197,6 +199,7 @@ pub mod trait_test {
         use std::ops::Add;
 
         struct Foo;
+
         struct Bar;
 
         #[derive(Debug)]
@@ -247,6 +250,7 @@ pub mod trait_test {
             x: T,
             y: T,
         }
+
         // Notice that the implementation uses the associated type `Output`.
         impl<T: Add<Output = T>> Add for Point<T> {
             type Output = Self;
@@ -264,6 +268,78 @@ pub mod trait_test {
             println!("Bar + Foo = {:?}", Bar + Foo);
             println!("Bar + Foo + Foo + Bar = {:?}", (Bar + Foo) + (Foo + Bar));
             println!("{:?}", Point { x: 1, y: 2 } + Point { x: 11, y: 12 })
+        }
+    }
+
+    mod traits {
+        pub trait Summary {
+            fn summarize(&self) -> String;
+        }
+
+        pub struct Article {
+            pub headline: String,
+            pub location: String,
+            pub author: String,
+            pub content: String,
+        }
+
+        impl Summary for Article {
+            fn summarize(&self) -> String {
+                format!("{}, by {} ({})", self.headline, self.author, self.location)
+            }
+        }
+
+        pub struct Tweet {
+            pub username: String,
+            pub content: String,
+            pub reply: bool,
+            pub retweet: bool,
+        }
+
+        impl Summary for Tweet {
+            fn summarize(&self) -> String {
+                format!("{}: {}", self.username, self.content)
+            }
+        }
+
+        fn from_summary(s: &impl Summary) {
+            println!("{}", s.summarize());
+        }
+
+        fn from_summary2(s: &dyn Summary) {
+            println!("{}", s.summarize());
+        }
+
+        fn to_summary() -> impl Summary {
+            Tweet {
+                username: String::from("horse_ebooks"),
+                content: String::from("of course, as you probably already know, people"),
+                reply: false,
+                retweet: false,
+            }
+        }
+        /*fn to_summary2<'a>() -> &'a dyn Summary {
+            &Tweet {
+                username: String::from("horse_ebooks"),
+                content: String::from("of course, as you probably already know, people"),
+                reply: false,
+                retweet: false,
+            }
+        }*/
+
+        #[test]
+        fn test() {
+            let tweet = Tweet {
+                username: String::from("horse_ebooks"),
+                content: String::from("of course, as you probably already know, people"),
+                reply: false,
+                retweet: false,
+            };
+            from_summary(&tweet);
+            from_summary2(&tweet);
+
+            println!("{}", to_summary().summarize());
+            //println!("{}", to_summary2().summarize());
         }
     }
 }
