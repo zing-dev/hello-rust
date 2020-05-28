@@ -173,4 +173,96 @@ pub mod string {
         str.retain(|c| c != ' ');
         println!("{}", str);
     }
+
+    #[test]
+    fn insert() {
+        let mut s = String::with_capacity(3);
+        s.insert(0, 'f');
+        s.insert(1, 'o');
+        s.insert(2, 'o');
+        println!("{:?}", s);
+        s.insert(2, '1');
+        println!("{:?}", s); //"fo1o"
+        println!("{:?}", s.capacity()); //6
+    }
+
+    #[test]
+    fn insert_str() {
+        let mut str = String::new();
+        str.insert_str(0, "hello");
+        str.insert_str(str.len(), "\t");
+        str.insert_str(str.len(), "world");
+        println!("{}", str); //hello	world
+    }
+
+    #[test]
+    fn as_mut_vec() {
+        let mut str = String::new();
+        str.insert_str(0, "hello");
+        str.insert_str(str.len(), "\t");
+        str.insert_str(str.len(), "world");
+
+        unsafe {
+            let x = str.as_mut_vec();
+            println!("{:?}", x);
+        }
+    }
+
+    #[test]
+    fn split_off() {
+        let mut str = String::from("Hello World");
+        let string = str.split_off(4);
+        println!("{}", str); //Hell
+        println!("{}", string); //o World
+
+        let string = str.split_off(str.len());
+        println!("{}", str); //Hell
+        println!("{}", string); //o World
+    }
+
+    #[test]
+    fn clear() {
+        let mut str = String::from("Hello World");
+        println!("capacity {}", str.capacity()); //11
+        println!("len {}", str.len()); //11
+        str.clear();
+        println!("capacity {}", str.capacity()); //11
+        println!("len {}", str.len()); //0
+    }
+
+    #[test]
+    fn drain() {
+        let mut s = String::from("α is alpha, β is beta");
+        let beta_offset = s.find('β').unwrap_or(s.len());
+
+        // Remove the range up until the β from the string
+        let t: String = s.drain(..beta_offset).collect();
+        assert_eq!(t, "α is alpha, ");
+        assert_eq!(s, "β is beta");
+
+        // A full range clears the string
+        s.drain(..);
+        assert_eq!(s, "");
+
+        let mut string = String::from("hello world");
+        let string1 = string.drain(2..4).collect::<String>();
+        println!("{}", string1);
+        println!("{}", string);
+    }
+
+    #[test]
+    fn replace_range() {
+        let mut s = String::from("α is alpha, β is beta");
+        let beta_offset = s.find('β').unwrap_or(s.len());
+
+        // Replace the range up until the β from the string
+        s.replace_range(..beta_offset, "Α is capital alpha; ");
+        assert_eq!(s, "Α is capital alpha; β is beta");
+    }
+
+    #[test]
+    fn as_bytes() {
+        println!("{:?}", String::from("RUST").as_bytes());
+        println!("{:?}", String::from("你好").as_bytes()); //[228, 189, 160, 229, 165, 189]
+    }
 }

@@ -148,4 +148,69 @@ pub mod char_test {
         println!("{}", "i\u{307}");
         assert_eq!('İ'.to_lowercase().to_string(), "i\u{307}");
     }
+
+    #[test]
+    fn to_uppercase() {
+        println!("{}", 'a'.to_uppercase());
+        println!("{}", 'A'.to_uppercase());
+        println!("{}", '张'.to_uppercase());
+    }
+
+    #[test]
+    fn is_ascii() {
+        //127
+        for i in 0..256 {
+            println!(
+                "{} {} is_ascii is {}",
+                i,
+                i as u8 as char,
+                (i as u8 as char).is_ascii()
+            );
+        }
+    }
+
+    #[test]
+    fn to_ascii_uppercase() {
+        println!("{}", 'a'.to_ascii_uppercase());
+        println!("{}", '😒'.to_ascii_uppercase());
+    }
+
+    #[test]
+    fn eq_ignore_ascii_case() {
+        println!("{}", 'a'.eq_ignore_ascii_case(&'A'));
+        println!("{}", 'a'.eq_ignore_ascii_case(&'B'));
+    }
+
+    #[test]
+    fn make_ascii_uppercase() {
+        let mut char = 'a';
+        char.make_ascii_uppercase();
+        println!("{}", char);
+    }
+
+    #[test]
+    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z'
+    fn is_ascii_alphabetic() {
+        println!("{}", 'a'.is_ascii_alphabetic());
+        println!("{}", '['.is_ascii_alphabetic());
+        println!("{}", '~'.is_ascii_alphabetic());
+    }
+
+    #[test]
+    /// - U+0041 'A' ..= U+005A 'Z', or
+    /// - U+0061 'a' ..= U+007A 'z', or
+    /// - U+0030 '0' ..= U+0039 '9'.
+    fn is_ascii_alphanumeric() {
+        println!("{}", 'A'.is_ascii_alphanumeric())
+    }
+
+    #[test]
+    /// U+0030 '0' ..= U+0039 '9'.
+    fn is_ascii_digit() {}
+
+    #[test]
+    /// - U+0030 '0' ..= U+0039 '9', or
+    /// - U+0041 'A' ..= U+0046 'F', or
+    /// - U+0061 'a' ..= U+0066 'f'.
+    fn is_ascii_hexdigit() {}
 }
