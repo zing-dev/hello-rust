@@ -51,6 +51,7 @@ pub mod slice {
         }
         println!("{:?}", z);*/
     }
+
     #[test]
     fn split_first() {
         let x = [1, 2, 3, 4];
@@ -117,5 +118,154 @@ pub mod slice {
             *v /= 2;
             println!("for => {}", v);
         }
+    }
+
+    #[test]
+    fn windows() {
+        let slice = ['f', 'o', 'o'];
+        let mut iter = slice.windows(4);
+        println!("{:?}", iter);
+        println!("{:?}", iter.len());
+        assert!(iter.next().is_none());
+
+        let slice = ['r', 'u', 's', 't'];
+        let mut iter = slice.windows(2);
+        assert_eq!(iter.next().unwrap(), &['r', 'u']);
+        assert_eq!(iter.next().unwrap(), &['u', 's']);
+        assert_eq!(iter.next().unwrap(), &['s', 't']);
+        assert!(iter.next().is_none());
+    }
+
+    #[test]
+    fn chunks() {
+        let slice = ['l', 'o', 'r', 'e', 'm'];
+        let mut iter = slice.chunks(2);
+        assert_eq!(iter.next().unwrap(), &['l', 'o']);
+        assert_eq!(iter.next().unwrap(), &['r', 'e']);
+        assert_eq!(iter.next().unwrap(), &['m']);
+        assert!(iter.next().is_none());
+    }
+
+    #[test]
+    fn chunks_mut() {
+        let v = &mut [0, 0, 0, 0, 0];
+        let mut count = 1;
+
+        for chunk in v.chunks_mut(2) {
+            for elem in chunk.iter_mut() {
+                *elem += count;
+            }
+            count += 1;
+        }
+        assert_eq!(v, &[1, 1, 2, 2, 3]);
+    }
+
+    #[test]
+    fn chunks_exact() {
+        let slice = ['l', 'o', 'r', 'e', 'm'];
+        let mut iter = slice.chunks_exact(2);
+        assert_eq!(iter.next().unwrap(), &['l', 'o']);
+        assert_eq!(iter.next().unwrap(), &['r', 'e']);
+        assert!(iter.next().is_none());
+        assert_eq!(iter.remainder(), &['m']);
+    }
+
+    #[test]
+    fn chunks_exact_mut() {
+        let v = &mut [0, 0, 0, 0, 0];
+        let mut count = 1;
+
+        for chunk in v.chunks_exact_mut(2) {
+            for elem in chunk.iter_mut() {
+                *elem += count;
+            }
+            count += 1;
+        }
+        assert_eq!(v, &[1, 1, 2, 2, 0]);
+    }
+
+    #[test]
+    fn rchunks() {
+        let slice = ['l', 'o', 'r', 'e', 'm'];
+        let mut iter = slice.rchunks(2);
+        assert_eq!(iter.next().unwrap(), &['e', 'm']);
+        assert_eq!(iter.next().unwrap(), &['o', 'r']);
+        assert_eq!(iter.next().unwrap(), &['l']);
+        assert!(iter.next().is_none());
+    }
+
+    #[test]
+    fn rchunks_mut() {
+        let v = &mut [0, 0, 0, 0, 0];
+        let mut count = 1;
+
+        for chunk in v.rchunks_mut(2) {
+            for elem in chunk.iter_mut() {
+                *elem += count;
+            }
+            count += 1;
+        }
+        assert_eq!(v, &[3, 2, 2, 1, 1]);
+    }
+
+    #[test]
+    fn rchunks_exact() {
+        let slice = ['l', 'o', 'r', 'e', 'm'];
+        let mut iter = slice.rchunks_exact(2);
+        assert_eq!(iter.next().unwrap(), &['e', 'm']);
+        assert_eq!(iter.next().unwrap(), &['o', 'r']);
+        assert!(iter.next().is_none());
+        assert_eq!(iter.remainder(), &['l']);
+    }
+
+    #[test]
+    fn rchunks_exact_mut() {
+        let v = &mut [0, 0, 0, 0, 0];
+        let mut count = 1;
+
+        for chunk in v.rchunks_exact_mut(2) {
+            for elem in chunk.iter_mut() {
+                *elem += count;
+            }
+            count += 1;
+        }
+        assert_eq!(v, &[0, 2, 2, 1, 1]);
+    }
+
+    #[test]
+    fn split_at() {
+        let v = [1, 2, 3, 4, 5, 6];
+
+        {
+            let (left, right) = v.split_at(0);
+            assert!(left == []);
+            assert!(right == [1, 2, 3, 4, 5, 6]);
+        }
+
+        {
+            let (left, right) = v.split_at(2);
+            assert!(left == [1, 2]);
+            assert!(right == [3, 4, 5, 6]);
+        }
+
+        {
+            let (left, right) = v.split_at(6);
+            assert!(left == [1, 2, 3, 4, 5, 6]);
+            assert!(right == []);
+        }
+    }
+
+    #[test]
+    fn split_at_mut() {
+        let mut v = [1, 0, 3, 0, 5, 6];
+        // scoped to restrict the lifetime of the borrows
+        {
+            let (left, right) = v.split_at_mut(2);
+            assert!(left == [1, 0]);
+            assert!(right == [3, 0, 5, 6]);
+            left[1] = 2;
+            right[1] = 4;
+        }
+        assert!(v == [1, 2, 3, 4, 5, 6]);
     }
 }

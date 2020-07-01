@@ -265,4 +265,13 @@ pub mod string {
         println!("{:?}", String::from("RUST").as_bytes());
         println!("{:?}", String::from("你好").as_bytes()); //[228, 189, 160, 229, 165, 189]
     }
+
+    #[test]
+    fn into_boxed_str() {
+        let str = String::from("hello world");
+        let x = str.into_boxed_str();
+        println!("{}", x);
+        println!("{}", x.len());
+        println!("{}", x.to_uppercase());
+    }
 }
