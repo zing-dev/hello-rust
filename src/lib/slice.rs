@@ -268,4 +268,160 @@ pub mod slice {
         }
         assert!(v == [1, 2, 3, 4, 5, 6]);
     }
+
+    #[test]
+    fn split() {
+        let slice = [10, 40, 33, 20];
+        let mut iter = slice.split(|num| num % 3 == 0);
+
+        assert_eq!(iter.next().unwrap(), &[10, 40]);
+        assert_eq!(iter.next().unwrap(), &[20]);
+        assert!(iter.next().is_none());
+
+        let slice = [10, 40, 33];
+        let mut iter = slice.split(|num| num % 3 == 0);
+
+        assert_eq!(iter.next().unwrap(), &[10, 40]);
+        assert_eq!(iter.next().unwrap(), &[]);
+        assert!(iter.next().is_none());
+
+        let slice = [10, 6, 33, 20];
+        let mut iter = slice.split(|num| num % 3 == 0);
+
+        assert_eq!(iter.next().unwrap(), &[10]);
+        assert_eq!(iter.next().unwrap(), &[]);
+        assert_eq!(iter.next().unwrap(), &[20]);
+        assert!(iter.next().is_none());
+
+        let slice = [10, 6, 9, 33, 20];
+        let iter = slice.split(|num| num % 3 == 0);
+        println!("{:?}", iter);
+        for i in iter {
+            println!("{:?}", i);
+        }
+    }
+
+    #[test]
+    fn split_mut() {
+        let mut v = [10, 40, 30, 20, 60, 50];
+
+        for group in v.split_mut(|num| *num % 3 == 0) {
+            group[0] = 1;
+        }
+        assert_eq!(v, [1, 40, 30, 1, 60, 1]);
+    }
+
+    // #[test]
+    // #[feature(split_inclusive)]
+    // fn split_inclusive() {
+    //     let slice = [10, 40, 33, 20];
+    //     let mut iter = slice.split_inclusive(|num| num % 3 == 0);
+    //
+    //     assert_eq!(iter.next().unwrap(), &[10, 40, 33]);
+    //     assert_eq!(iter.next().unwrap(), &[20]);
+    //     assert!(iter.next().is_none());
+    // }
+
+    #[test]
+    fn rsplit() {
+        let slice = [11, 22, 33, 0, 44, 55];
+        let mut iter = slice.rsplit(|num| *num == 0);
+
+        assert_eq!(iter.next().unwrap(), &[44, 55]);
+        assert_eq!(iter.next().unwrap(), &[11, 22, 33]);
+        assert_eq!(iter.next(), None);
+
+        let v = &[0, 1, 1, 2, 3, 5, 8];
+        let mut it = v.rsplit(|n| *n % 2 == 0);
+        assert_eq!(it.next().unwrap(), &[]);
+        assert_eq!(it.next().unwrap(), &[3, 5]);
+        assert_eq!(it.next().unwrap(), &[1, 1]);
+        assert_eq!(it.next().unwrap(), &[]);
+        assert_eq!(it.next(), None);
+    }
+
+    #[test]
+    fn rsplit_mut() {
+        let mut v = [100, 400, 300, 200, 600, 500];
+
+        let mut count = 0;
+        for group in v.rsplit_mut(|num| *num % 3 == 0) {
+            count += 1;
+            group[0] = count;
+        }
+        assert_eq!(v, [3, 400, 300, 2, 600, 1]);
+    }
+
+    #[test]
+    fn splitn() {
+        let v = [10, 40, 30, 20, 60, 50];
+
+        for group in v.splitn(2, |num| *num % 3 == 0) {
+            println!("{:?}", group);
+        }
+        println!("========================================");
+        for group in v.splitn(3, |num| *num % 3 == 0) {
+            println!("{:?}", group);
+        }
+    }
+
+    #[test]
+    fn splitn_mut() {
+        let mut v = [10, 40, 30, 20, 60, 50];
+
+        for group in v.splitn_mut(2, |num| *num % 3 == 0) {
+            group[0] = 1;
+        }
+        assert_eq!(v, [1, 40, 30, 1, 60, 50]);
+    }
+
+    #[test]
+    fn rsplitn() {
+        let v = [10, 40, 30, 20, 60, 50];
+
+        for group in v.rsplitn(2, |num| *num % 3 == 0) {
+            println!("{:?}", group);
+        }
+        println!("==========================================");
+        for group in v.splitn(2, |num| *num % 3 == 0) {
+            println!("{:?}", group);
+        }
+    }
+
+    #[test]
+    fn rsplitn_mut() {
+        let mut s = [10, 40, 30, 20, 60, 50];
+
+        for group in s.rsplitn_mut(2, |num| *num % 3 == 0) {
+            group[0] = 1;
+            println!("{:?}", group)
+        }
+        assert_eq!(s, [1, 40, 30, 20, 60, 1]);
+    }
+
+    #[test]
+    fn contains() {
+        let v = [10, 40, 30];
+        assert!(v.contains(&30));
+        assert!(!v.contains(&50));
+
+        let v = [String::from("hello"), String::from("world")]; // slice of `String`
+        assert!(v.iter().any(|e| e == "hello")); // search with `&str`
+        assert!(!v.iter().any(|e| e == "hi"));
+        println!("{}", v.contains(&String::from("hello")));
+    }
+
+    #[test]
+    fn starts_with() {
+        let v = [10, 40, 30];
+        assert!(v.starts_with(&[10]));
+        assert!(v.starts_with(&[10, 40]));
+        assert!(!v.starts_with(&[50]));
+        assert!(!v.starts_with(&[10, 50]));
+        //Always returns `true` if `needle` is an empty slice:
+        let v = &[10, 40, 30];
+        assert!(v.starts_with(&[]));
+        let v: &[u8] = &[];
+        assert!(v.starts_with(&[]));
+    }
 }
