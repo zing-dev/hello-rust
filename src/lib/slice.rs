@@ -424,4 +424,112 @@ pub mod slice {
         let v: &[u8] = &[];
         assert!(v.starts_with(&[]));
     }
+
+    #[test]
+    fn ends_with() {
+        let v = [10, 40, 30];
+        assert!(v.ends_with(&[30]));
+        assert!(v.ends_with(&[40, 30]));
+        assert!(!v.ends_with(&[50]));
+        assert!(!v.ends_with(&[50, 30]));
+
+        let v = &[10, 40, 30];
+        assert!(v.ends_with(&[]));
+        let v: &[u8] = &[];
+        assert!(v.ends_with(&[]));
+    }
+
+    #[test]
+    fn binary_search() {
+        let s = [0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+
+        assert_eq!(s.binary_search(&13), Ok(9));
+        assert_eq!(s.binary_search(&4), Err(7));
+        assert_eq!(s.binary_search(&100), Err(13));
+        println!("{:?}", s.binary_search(&100));
+        let r = s.binary_search(&1);
+        assert!(match r {
+            Ok(1..=4) => true,
+            _ => false,
+        });
+
+        let mut s = vec![0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+        let num = 42;
+        let idx = s.binary_search(&num).unwrap_or_else(|x| x);
+        s.insert(idx, num);
+        assert_eq!(s, [0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 42, 55]);
+    }
+
+    #[test]
+    fn binary_search_by() {
+        let s = [0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+
+        let seek = 13;
+        assert_eq!(s.binary_search_by(|probe| probe.cmp(&seek)), Ok(9));
+        let seek = 4;
+        assert_eq!(s.binary_search_by(|probe| probe.cmp(&seek)), Err(7));
+        let seek = 100;
+        assert_eq!(s.binary_search_by(|probe| probe.cmp(&seek)), Err(13));
+        let seek = 1;
+        let r = s.binary_search_by(|probe| probe.cmp(&seek));
+        assert!(match r {
+            Ok(1..=4) => true,
+            _ => false,
+        });
+    }
+
+    #[test]
+    fn binary_search_by_key() {
+        let s = [
+            (0, 0),
+            (2, 1),
+            (4, 1),
+            (5, 1),
+            (3, 1),
+            (1, 2),
+            (2, 3),
+            (4, 5),
+            (5, 8),
+            (3, 13),
+            (1, 21),
+            (2, 34),
+            (4, 55),
+        ];
+
+        assert_eq!(s.binary_search_by_key(&13, |&(_, b)| b), Ok(9));
+        assert_eq!(s.binary_search_by_key(&4, |&(_, b)| b), Err(7));
+        assert_eq!(s.binary_search_by_key(&100, |&(_, b)| b), Err(13));
+        let r = s.binary_search_by_key(&1, |&(_, b)| b);
+        assert!(match r {
+            Ok(1..=4) => true,
+            _ => false,
+        });
+    }
+
+    #[test]
+    fn sort_unstable() {
+        let mut v = [-5, 4, 1, -3, 2];
+
+        v.sort_unstable();
+        assert!(v == [-5, -3, 1, 2, 4]);
+    }
+
+    #[test]
+    fn sort_unstable_by() {
+        let mut v = [5, 4, 1, 3, 2];
+        v.sort_unstable_by(|a, b| a.cmp(b));
+        assert!(v == [1, 2, 3, 4, 5]);
+
+        // reverse sorting
+        v.sort_unstable_by(|a, b| b.cmp(a));
+        assert!(v == [5, 4, 3, 2, 1]);
+    }
+
+    #[test]
+    fn sort_unstable_by_key() {
+        let mut v = [-5i32, 4, 1, -3, 2];
+
+        v.sort_unstable_by_key(|k| k.abs());
+        assert!(v == [1, 2, -3, 4, -5]);
+    }
 }
