@@ -9,6 +9,7 @@ pub mod net;
 pub mod path;
 pub mod rand;
 pub mod slice;
+pub mod str;
 pub mod string;
 pub mod thread;
 pub mod time;
