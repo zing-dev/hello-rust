@@ -8,6 +8,7 @@ pub mod io;
 pub mod iter;
 pub mod net;
 pub mod path;
+pub mod process;
 pub mod rand;
 pub mod slice;
 pub mod str;
