@@ -37,7 +37,6 @@ pub mod c_str {
             }
         }
 
-        /*
         #[test]
         fn from_vec_unchecked() {
             use std::ffi::CString;
@@ -48,6 +47,7 @@ pub mod c_str {
             }
         }
 
+        /*
         //error: linking with `link.exe` failed: exit code: 1120
         #[test]
         fn from_raw() {
