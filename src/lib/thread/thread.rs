@@ -6,7 +6,7 @@ pub mod thread {
     fn spawn() {
         let handler = thread::spawn(|| {
             let str = "hello world";
-            println!("{}", str);
+            println!("==> {}", str);
             str
         });
         println!("{}", handler.join().unwrap());
@@ -32,7 +32,7 @@ pub mod thread {
     #[test]
     fn spawn3() {
         let handle = thread::spawn(|| {
-            for i in 1..10 {
+            for i in 1..6 {
                 println!("hi number {} from the spawned thread!", i);
                 thread::sleep(Duration::from_millis(1));
             }
@@ -68,7 +68,9 @@ pub mod thread {
     }
 
     pub mod builder {
-        use std::thread::current;
+        use std::ops::Sub;
+        use std::thread;
+        use std::time::{Duration, Instant};
 
         #[test]
         fn new() {
@@ -78,12 +80,42 @@ pub mod thread {
                 .stack_size(32 * 1024);
             let handler = builder
                 .spawn(|| {
-                    println!("{:?}", current().id());
-                    println!("{}", current().name().unwrap());
-                    println!("hello thread")
+                    println!("hello thread");
                 })
                 .unwrap();
             handler.join().unwrap();
+            println!("over!");
+        }
+
+        #[test]
+        fn name() {
+            let builder = thread::Builder::new().name("foo".into());
+            let start = Instant::now();
+            let handler = builder
+                .spawn(move || {
+                    assert_eq!(thread::current().name(), Some("foo"));
+                    println!("{}", thread::current().name().unwrap());
+                    thread::sleep(Duration::from_secs(1))
+                })
+                .unwrap();
+
+            let handler2 = thread::Builder::new()
+                .spawn(|| {
+                    println!("{}", "hello");
+                    thread::sleep(Duration::from_secs(2));
+                })
+                .unwrap();
+
+            let handler3 = thread::spawn(|| {
+                println!("{}", "hello world");
+                thread::sleep(Duration::from_secs(1));
+            });
+            handler.join().unwrap();
+            handler2.join().unwrap();
+            handler3.join().unwrap();
+            let end = Instant::now();
+            let x = end.sub(start);
+            println!("{}", x.as_secs())
         }
     }
 }

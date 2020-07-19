@@ -38,8 +38,8 @@ pub mod box_test {
             Ordering::Greater => println!("greater"),
         }
 
-        let x = Box::from([1_u8, 2, 3]);
-        println!("{:?}", x);
-        println!("{}", x.first().unwrap());
+        // let x2 = Box::from([1_u8, 2, 3]);
+        // println!("{:?}", x2);
+        // println!("{}", x2.first().unwrap());
     }
 }

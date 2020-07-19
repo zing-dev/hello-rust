@@ -14,6 +14,7 @@ pub mod result;
 pub mod slice;
 pub mod str;
 pub mod string;
+pub mod sync;
 pub mod thread;
 pub mod time;
 pub mod vec;

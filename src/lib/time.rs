@@ -116,7 +116,7 @@ pub mod time {
         #[test]
         fn duration_since() {
             let now = Instant::now();
-            sleep(Duration::new(1, 0));
+            sleep(Duration::from_secs(1));
             let new_now = Instant::now();
             println!("{:?}", new_now.duration_since(now));
 

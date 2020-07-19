@@ -83,7 +83,7 @@ pub mod fn_test {
             // `farewell` by value.
             let diary = || {
                 // `greeting` is by reference: requires `Fn`.
-                println!("I said {}.", greeting);
+                println!("I said {}", greeting);
 
                 // Mutation forces `farewell` to be captured by
                 // mutable reference. Now requires `FnMut`.
@@ -115,6 +115,7 @@ pub mod fn_test {
             {
                 f();
             }
+
             fn apply2<F>(f: F)
             where
                 F: FnOnce(),
@@ -262,14 +263,10 @@ pub mod fn_test {
     }
 
     mod fn_mut {
-        use std::ops::Add;
-
         fn do_twice<F>(mut func: F)
         where
             F: FnMut(),
         {
-            func();
-            func();
             func();
             func();
         }
@@ -278,10 +275,23 @@ pub mod fn_test {
         fn test() {
             let mut x: usize = 1;
             {
+                // --> src\test\fn_test.rs:280:44
+                // |
+                // 280 |                 let add_two_to_y = move || y += 2;
+                // |                                            ^
+                // |
+                // = note: `#[warn(unused_variables)]` on by default
+                // = help: did you mean to capture by reference instead?
+
+                let mut y: usize = 1;
                 let add_two_to_x = || x += 2;
+                let add_two_to_y = || y += 2;
                 do_twice(add_two_to_x);
+                assert_eq!(x, 5);
+                println!("{}", x);
+                do_twice(add_two_to_y);
+                println!("{}", y);
             }
-            // assert_eq!(x, 5);
 
             x = 72;
             let mut string = String::new();
@@ -296,18 +306,20 @@ pub mod fn_test {
             println!("{}", string);
         }
     }
+
     mod fn_test {
-        fn call_with_one<F>(func: F) -> usize
+        fn call_with_one<F>(func: F, size: usize) -> usize
         where
             F: Fn(usize) -> usize,
         {
-            func(1)
+            func(size)
         }
 
         #[test]
         fn test() {
             let double = |x| x * 2;
-            assert_eq!(call_with_one(double), 2);
+            assert_eq!(call_with_one(double, 1), 2);
+            println!("{}", call_with_one(double, 2))
         }
     }
 }
