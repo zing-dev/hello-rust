@@ -1,6 +1,7 @@
-use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use std::io;
 use std::io::Cursor;
+
+use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 
 fn main() {}
 
@@ -57,11 +58,29 @@ fn write_u8() {
     assert_eq!(wtr, [2, 5]);
 }
 
-impl<W: io::Write + ?Sized> MyWriteBytesExt for W {}
-pub trait MyWriteBytesExt: io::Write {
+#[test]
+fn write_u32() {
+    let mut wtr = vec![];
+    wtr.write_u32::<byteorder::BigEndian>(u32::max_value())
+        .unwrap();
+    assert_eq!(wtr, b"\xff\xff\xff\xff");
+    assert_eq!(wtr, [0xff, 0xff, 0xff, 0xff]);
+    println!("{:?}", wtr);
+
+    wtr.write_u16::<byteorder::BigEndian>(0xff00).unwrap();
+    println!("{:?}", wtr);
+    wtr.write_u16::<byteorder::LittleEndian>(0xff00).unwrap();
+    println!("{:?}", wtr);
+}
+
+impl<W: io::Write + ?Sized> MyWriteBytesExt for W {
     fn hello(&self) {
         println!("hello world")
     }
+}
+
+pub trait MyWriteBytesExt: io::Write {
+    fn hello(&self);
 }
 
 #[test]

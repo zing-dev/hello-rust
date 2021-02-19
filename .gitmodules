@@ -1,3 +1,6 @@
 [submodule "rust-by-example"]
 	path = rust-by-example
 	url = https://github.com/rust-lang/rust-by-example
+[submodule "rustlings"]
+	path = rustlings
+	url = git@github.com:rust-lang/rustlings.git
