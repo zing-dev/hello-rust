@@ -34,12 +34,11 @@ pub fn derive() {
 
     let meter = Centimeters(100.0);
 
-    let cmp =
-        if foot.to_centimeters() < meter {
-            "smaller"
-        } else {
-            "bigger"
-        };
+    let cmp = if foot.to_centimeters() < meter {
+        "smaller"
+    } else {
+        "bigger"
+    };
 
     println!("One foot is {} than one meter.", cmp);
 }
@@ -78,7 +77,10 @@ pub fn dyn_test() {
 
     let random_number = 0.234;
     let animal = random_animal(random_number);
-    println!("You've randomly chosen an animal, and it says {}", animal.noise());
+    println!(
+        "You've randomly chosen an animal, and it says {}",
+        animal.noise()
+    );
 }
 
 pub fn overload() {
@@ -94,8 +96,8 @@ pub fn overload() {
     struct BarFoo;
 
     // The `std::ops::Add` trait is used to specify the functionality of `+`.
-// Here, we make `Add<Bar>` - the trait for addition with a RHS of type `Bar`.
-// The following block implements the operation: Foo + Bar = FooBar
+    // Here, we make `Add<Bar>` - the trait for addition with a RHS of type `Bar`.
+    // The following block implements the operation: Foo + Bar = FooBar
     impl ops::Add<Bar> for Foo {
         type Output = FooBar;
 
@@ -107,8 +109,8 @@ pub fn overload() {
     }
 
     // By reversing the types, we end up implementing non-commutative addition.
-// Here, we make `Add<Foo>` - the trait for addition with a RHS of type `Foo`.
-// This block implements the operation: Bar + Foo = BarFoo
+    // Here, we make `Add<Foo>` - the trait for addition with a RHS of type `Foo`.
+    // This block implements the operation: Bar + Foo = BarFoo
     impl ops::Add<Foo> for Bar {
         type Output = BarFoo;
 
@@ -170,7 +172,7 @@ pub fn iter() {
     }
 
     // Implement `Iterator` for `Fibonacci`.
-// The `Iterator` trait only requires a method to be defined for the `next` element.
+    // The `Iterator` trait only requires a method to be defined for the `next` element.
     impl Iterator for Fibonacci {
         type Item = u32;
 
@@ -237,7 +239,7 @@ pub fn impl_trait() {
     use std::vec::IntoIter;
 
     // This function combines two `Vec<i32>` and returns an iterator over it.
-// Look how complicated its return type is!
+    // Look how complicated its return type is!
     fn combine_vecs_explicit_return_type<'a>(
         v: Vec<i32>,
         u: Vec<i32>,
@@ -246,24 +248,18 @@ pub fn impl_trait() {
     }
 
     // This is the exact same function, but its return type uses `impl Trait`.
-// Look how much simpler it is!
-    fn combine_vecs<'a>(
-        v: Vec<i32>,
-        u: Vec<i32>,
-    ) -> impl Iterator<Item=i32> {
+    // Look how much simpler it is!
+    fn combine_vecs<'a>(v: Vec<i32>, u: Vec<i32>) -> impl Iterator<Item = i32> {
         v.into_iter().chain(u.into_iter()).cycle()
     }
 
-    fn double_positives<'a>(numbers: &'a Vec<i32>) -> impl Iterator<Item=i32> + 'a {
-        numbers
-            .iter()
-            .filter(|x| x > &&0)
-            .map(|x| x * 2)
+    fn double_positives<'a>(numbers: &'a Vec<i32>) -> impl Iterator<Item = i32> + 'a {
+        numbers.iter().filter(|x| x > &&0).map(|x| x * 2)
     }
 
     // Returns a function that adds `y` to its input
     fn make_adder_function(y: i32) -> impl Fn(i32) -> i32 {
-        let closure = move |x: i32| { x + y };
+        let closure = move |x: i32| x + y;
         closure
     }
 
@@ -320,7 +316,7 @@ pub fn supertraits() {
     }
 
     // Student is a supertrait of Person.
-// Implementing Student requires you to also impl Person.
+    // Implementing Student requires you to also impl Person.
     trait Student: Person {
         fn university(&self) -> String;
     }
@@ -330,7 +326,7 @@ pub fn supertraits() {
     }
 
     // CompSciStudent (computer science student) is a supertrait of both Programmer
-// and Student. Implementing CompSciStudent requires you to impl both subtraits.
+    // and Student. Implementing CompSciStudent requires you to impl both subtraits.
     trait CompSciStudent: Programmer + Student {
         fn git_username(&self) -> String;
     }

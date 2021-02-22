@@ -10,6 +10,7 @@ pub mod net;
 pub mod path;
 pub mod process;
 pub mod rand;
+pub mod rc;
 pub mod result;
 pub mod slice;
 pub mod str;

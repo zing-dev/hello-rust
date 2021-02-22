@@ -33,24 +33,6 @@ pub mod loop_test {
     use std::time::Duration;
 
     #[test]
-    fn common() {
-        let mut i = 0;
-        loop {
-            let str: String = rand::thread_rng().gen_ascii_chars().take(5).collect();
-            println!("str = > {}", str);
-            if i == 3 {
-                println!("continue");
-                continue;
-            }
-            if i > 10 {
-                println!("break");
-                break;
-            }
-            i += 1;
-        }
-    }
-
-    #[test]
     #[allow(unreachable_code)]
     fn nested() {
         'outer: loop {
@@ -178,7 +160,7 @@ pub mod match_test {
 
     #[test]
     fn common() {
-        let number = rand::thread_rng().gen_range(0, 30);
+        let number = rand::thread_rng().gen_range(0..30);
         println!("Tell me about {}", number);
         match number {
             1 => println!("One!"),
@@ -211,7 +193,7 @@ pub mod match_test {
     #[test]
     fn binding() {
         fn age() -> u32 {
-            rand::thread_rng().gen_range(0, 30)
+            rand::thread_rng().gen_range(0..30)
         }
         println!("Tell me what type of person you are");
         match age() {
@@ -290,7 +272,7 @@ pub mod match_test {
         let a = Foo::Bar;
         let b = Foo::Baz;
         let c = Foo::Qux(100);
-        let d = Foo::Qux(rand::thread_rng().gen_range(0, 30));
+        let d = Foo::Qux(rand::thread_rng().gen_range(0..30));
 
         if let Foo::Bar = a {
             println!("a is foobar");

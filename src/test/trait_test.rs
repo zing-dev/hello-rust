@@ -185,7 +185,7 @@ pub mod trait_test {
 
         #[test]
         fn run() {
-            let random_number = rand::thread_rng().gen_range(0.0, 1.0);
+            let random_number = rand::thread_rng().gen_range(0.0..1.0);
             let animal = random_animal(random_number);
             println!(
                 "You've randomly chosen an animal, and it says {}",

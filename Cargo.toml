@@ -17,12 +17,12 @@ members = [
     "demo/hello-world",
     "demo/socket2/quick-start",
     "demo/diesel/sqlite/getting_started_step_1",
-    "rustlings"
+#    "rustlings/exercises/clippy"
 ]
 
 [dependencies]
 ferris-says = "0.1"
-rand = "0.4.0"
+rand = "0.8.3"
 rust-crypto = "0.2"
 chrono = "0.4"
 serial = "0.4"
