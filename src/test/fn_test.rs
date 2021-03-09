@@ -217,7 +217,7 @@ pub mod fn_test {
     }
 
     mod fn_once {
-        use serde::export::fmt::{Debug, Display};
+        use std::fmt::{Display, Debug};
 
         fn consume_with_relish<F: FnOnce() -> String>(func: F) {
             // `func` consumes its captured variables, so it cannot be run more

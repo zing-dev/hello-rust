@@ -5,6 +5,7 @@
 pub mod learn;
 pub mod lib;
 pub mod test;
+pub mod leetcode;
 
 fn types() {
     use learn::types;
