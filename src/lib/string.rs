@@ -1,5 +1,6 @@
 pub mod string {
     use std::borrow::Cow;
+    use std::ops::Index;
 
     #[test]
     fn new() {
@@ -273,5 +274,15 @@ pub mod string {
         println!("{}", x);
         println!("{}", x.len());
         println!("{}", x.to_uppercase());
+    }
+
+    #[test]
+    fn get() {
+        let str = String::from("hello world");
+        //println!("{}",str[0]) //`String` cannot be indexed by `{integer}`
+        //println!("{}", str.index(0)); //`String` cannot be indexed by `{integer}`
+        //println!("{}",str.get(0)); //string indices are ranges of `usize`
+        let mut chars = str.chars();
+        println!("{}", chars.nth(0).unwrap())
     }
 }
