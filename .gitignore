@@ -8,3 +8,5 @@
 .env
 
 rustlings
+
+crates/*/*.idea
