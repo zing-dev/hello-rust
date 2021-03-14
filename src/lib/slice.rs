@@ -239,18 +239,18 @@ pub mod slice {
         {
             let (left, right) = v.split_at(0);
             assert!(left == []);
-            assert!(right == [1, 2, 3, 4, 5, 6]);
+            assert_eq!(right, [1, 2, 3, 4, 5, 6]);
         }
 
         {
             let (left, right) = v.split_at(2);
-            assert!(left == [1, 2]);
-            assert!(right == [3, 4, 5, 6]);
+            assert_eq!(left, [1, 2]);
+            assert_eq!(right, [3, 4, 5, 6]);
         }
 
         {
             let (left, right) = v.split_at(6);
-            assert!(left == [1, 2, 3, 4, 5, 6]);
+            assert_eq!(left, [1, 2, 3, 4, 5, 6]);
             assert!(right == []);
         }
     }
@@ -261,12 +261,12 @@ pub mod slice {
         // scoped to restrict the lifetime of the borrows
         {
             let (left, right) = v.split_at_mut(2);
-            assert!(left == [1, 0]);
-            assert!(right == [3, 0, 5, 6]);
+            assert_eq!(left, [1, 0]);
+            assert_eq!(right, [3, 0, 5, 6]);
             left[1] = 2;
             right[1] = 4;
         }
-        assert!(v == [1, 2, 3, 4, 5, 6]);
+        assert_eq!(v, [1, 2, 3, 4, 5, 6]);
     }
 
     #[test]
@@ -511,18 +511,18 @@ pub mod slice {
         let mut v = [-5, 4, 1, -3, 2];
 
         v.sort_unstable();
-        assert!(v == [-5, -3, 1, 2, 4]);
+        assert_eq!(v, [-5, -3, 1, 2, 4]);
     }
 
     #[test]
     fn sort_unstable_by() {
         let mut v = [5, 4, 1, 3, 2];
         v.sort_unstable_by(|a, b| a.cmp(b));
-        assert!(v == [1, 2, 3, 4, 5]);
+        assert_eq!(v, [1, 2, 3, 4, 5]);
 
         // reverse sorting
         v.sort_unstable_by(|a, b| b.cmp(a));
-        assert!(v == [5, 4, 3, 2, 1]);
+        assert_eq!(v, [5, 4, 3, 2, 1]);
     }
 
     #[test]
@@ -530,6 +530,6 @@ pub mod slice {
         let mut v = [-5i32, 4, 1, -3, 2];
 
         v.sort_unstable_by_key(|k| k.abs());
-        assert!(v == [1, 2, -3, 4, -5]);
+        assert_eq!(v, [1, 2, -3, 4, -5]);
     }
 }

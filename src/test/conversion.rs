@@ -86,7 +86,7 @@ pub mod conversion {
         type Error = ();
 
         fn try_from(value: i32) -> Result<Self, Self::Error> {
-            if value % 2 == 0 {
+            if value % 2 != 0 {
                 Ok(EvenNumber(value))
             } else {
                 Err(())
@@ -122,7 +122,8 @@ pub mod conversion {
     #[test]
     fn string() {
         let circle = Circle { radius: 6 };
-        println!("{}", circle.to_string());
+        let Circle { radius } = circle;
+        println!("{} {}", radius, circle.to_string());
 
         let parsed: i32 = "5".parse::<i64>().unwrap() as i32;
         let turbo_parsed = "10".parse::<i32>().unwrap();
