@@ -1,4 +1,120 @@
 pub mod fn_test {
+    pub mod test {
+        use std::fmt::Display;
+        use std::ops::Mul;
+
+        //利用 Raw identifier 将语言关键字用作函数名
+        fn r#match(needle: &str, haystack: &str) -> bool {
+            haystack.contains(needle)
+        }
+
+        #[test]
+        fn test_match() {
+            assert!(r#match("foo", "foobar"))
+        }
+
+        fn modify(mut v: Vec<i32>) -> Vec<i32> {
+            v.push(100);
+            v
+        }
+
+        fn modify_ref(v: &mut Vec<i32>) {
+            v.reverse();
+        }
+
+        #[test]
+        fn test_modify() {
+            let v = vec![1];
+            let mut v2 = modify(v);
+            println!("{:?}", v2);
+            let v3 = v2.as_mut();
+            modify_ref(v3);
+            println!("{:?}", v3)
+        }
+
+        fn square<T: Mul<T, Output = T>>(x: T, y: T) -> T {
+            x * y
+        }
+
+        #[test]
+        fn test_square() {
+            assert_eq!(square(2, 3), 6);
+            assert_eq!(square::<i32>(2, 3), 6);
+            assert_eq!(square(37.2, 41.1), 1528.92);
+        }
+
+        fn hello() {
+            println!("hello")
+        }
+
+        fn one(i: i32) {
+            println!("{}", i)
+        }
+
+        fn two(i: i32, str: &str) {
+            println!("{} {}", i, str)
+        }
+
+        fn three<T: Ord + Display>(i: T) {
+            println!("{}", i);
+        }
+
+        pub mod type_point {
+            type MathOp = fn(i32, i32) -> i32;
+
+            fn math(op: &str) -> MathOp {
+                fn sum(a: i32, b: i32) -> i32 {
+                    a + b
+                }
+                fn product(a: i32, b: i32) -> i32 {
+                    a * b
+                }
+                match op {
+                    "sum" => sum,
+                    "product" => product,
+                    _ => panic!("err"),
+                }
+            }
+
+            fn math2(op: &str, a: i32, b: i32) -> i32 {
+                math(op)(a, b)
+            }
+
+            #[test]
+            fn test() {
+                let sum = math("sum");
+                println!("{}", sum(1, 2));
+                let product = math("product");
+                println!("{}", product(2, 3));
+                println!("{}", math2("product", 2, 4))
+            }
+        }
+
+        #[test]
+        fn test_point_fn() {
+            let f1: fn() = hello;
+            f1();
+
+            let f2: fn(i32) = one;
+            f2(1000);
+
+            let f3: fn(i32, &str) = two;
+            f3(1, "hello");
+
+            let f4: fn(i32) = three;
+            f4(1);
+
+            let f4: fn(String) = three;
+            f4("hello".to_owned());
+
+            let f5: fn(i32, i32) -> i32 = square;
+            println!("{}", f5(2, 3));
+
+            let f5: fn(f32, f32) -> f32 = square;
+            println!("{}", f5(2.1, 3.1));
+        }
+    }
+
     pub mod closures {
         use rand::Rng;
 
@@ -217,7 +333,7 @@ pub mod fn_test {
     }
 
     mod fn_once {
-        use std::fmt::{Display, Debug};
+        use std::fmt::{Debug, Display};
 
         fn consume_with_relish<F: FnOnce() -> String>(func: F) {
             // `func` consumes its captured variables, so it cannot be run more
