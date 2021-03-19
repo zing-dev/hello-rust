@@ -1,6 +1,6 @@
 // Suppress all warnings from casts which overflow.
-#![allow(overflowing_literals)]
-
+#[allow(overflowing_literals)]
+#[test]
 pub fn cast() {
     let decimal = 65.4321_f32;
 
@@ -48,7 +48,7 @@ pub fn cast() {
     println!(" 232 as a i8 is : {}", 232 as i8);
 }
 
-#[allow(dead_code)]
+#[test]
 pub fn literals() {
     // Suffixed literals, their types2 are known at initialization
     let x = 1u8;
@@ -59,6 +59,13 @@ pub fn literals() {
     let i = 1;
     let f = 1.0;
 
+    struct Foo;
+
+    struct Baz {
+        foo: Foo,
+        qux: (),
+        baz: [u8; 0],
+    };
     struct Person<'a, 'b> {
         // The 'a defines a lifetime
         name: &'a str,
@@ -70,12 +77,21 @@ pub fn literals() {
         age: 25,
         sex: "male",
     };
+    println!("size of `()` in bytes: {}", std::mem::size_of::<()>()); //0
+    println!(
+        "size of `struct Foo` in bytes: {}",
+        std::mem::size_of::<Foo>()
+    ); //0
+    println!(
+        "size of `struct Baz` in bytes: {}",
+        std::mem::size_of::<Baz>()
+    ); //0
 
     // `size_of_val` returns the size of a variable in bytes
-    println!("size of `x` in bytes: {}", std::mem::size_of_val(&x));
-    println!("size of `y` in bytes: {}", std::mem::size_of_val(&y));
-    println!("size of `z` in bytes: {}", std::mem::size_of_val(&z));
-    println!("size of `i` in bytes: {}", std::mem::size_of_val(&i));
+    println!("size of `x` in bytes: {}", std::mem::size_of_val(&x)); //1
+    println!("size of `y` in bytes: {}", std::mem::size_of_val(&y)); //4
+    println!("size of `z` in bytes: {}", std::mem::size_of_val(&z)); //4
+    println!("size of `i` in bytes: {}", std::mem::size_of_val(&i)); //4
     println!("size of `f` in bytes: {}", std::mem::size_of_val(&f)); //8
     println!("size of `p` in bytes: {}", std::mem::size_of_val(p)); //40
     println!("size of `&p` in bytes: {}", std::mem::size_of_val(&p)); //8
@@ -103,6 +119,18 @@ pub fn inference() {
     println!("{:#?}", vec);
 }
 
+//底类型
+fn foo() -> ! {
+    loop {
+        println!("loop")
+    }
+}
+
+#[test]
+fn test_foo() {
+    let i = if false { foo() } else { 100 };
+    assert_eq!(i, 100)
+}
 
 // `NanoSecond` is a new name for `u64`.
 type NanoSecond = u64;
@@ -120,8 +148,10 @@ pub fn alias() {
 
     // Note that type aliases *don't* provide any extra type safety, because
     // aliases are *not* new types
-    println!("{} nanoseconds + {} inches = {} unit?",
-             nanoseconds,
-             inches,
-             nanoseconds + inches);
+    println!(
+        "{} nanoseconds + {} inches = {} unit?",
+        nanoseconds,
+        inches,
+        nanoseconds + inches
+    );
 }

@@ -43,21 +43,22 @@ pub mod path {
     }
 
     mod path {
-        use crate::learn::match_test::while_let;
+        use std::env;
         use std::ffi::{OsStr, OsString};
-        use std::path::Path;
+        use std::ops::Deref;
+        use std::path::{self, Path};
 
         #[test]
         fn is_separator() {
-            println!("{}", std::path::is_separator('/'));
-            println!("{}", std::path::is_separator('\\'));
-            println!("{}", std::path::is_separator(' '));
-            println!("{}", std::path::is_separator('-'));
+            println!("{}", path::is_separator('/'));
+            println!("{}", path::is_separator('\\'));
+            println!("{}", path::is_separator(' '));
+            println!("{}", path::is_separator('-'));
         }
 
         #[test]
         fn new() {
-            let path = std::path::Path::new("test");
+            let path = Path::new("test");
             println!("{:?}", path);
             println!("{}", path.exists());
             println!("{:?}", path.file_name().unwrap());
