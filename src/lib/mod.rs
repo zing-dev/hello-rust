@@ -1,3 +1,4 @@
+pub mod array;
 pub mod box_test;
 pub mod char;
 pub mod chrono;
@@ -19,4 +20,3 @@ pub mod sync;
 pub mod thread;
 pub mod time;
 pub mod vec;
-pub mod array;
