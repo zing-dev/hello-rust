@@ -57,6 +57,7 @@ pub mod quick_start {
     }
 
     #[test]
+    //定制线程
     fn builder() {
         let mut v = vec![];
         for id in 0..5 {
@@ -82,6 +83,7 @@ pub mod quick_start {
     }
 
     #[test]
+    //线程本地存储  Thread Local Storage, TLS
     fn local() {
         thread_local!(static FOO:std::cell::RefCell<u32> = std::cell::RefCell::new(1));
         FOO.with(|f| {
@@ -100,6 +102,7 @@ pub mod quick_start {
     }
 
     #[test]
+    //底层同步原语
     fn park() {
         let handle = thread::Builder::new()
             .spawn(|| {
@@ -114,6 +117,8 @@ pub mod quick_start {
         handle.join().unwrap();
     }
 
+    //实现了Send 的类型，可以安全地在线程间传递所有权  跨线程移动。
+    //实现了Sync 的类型，可以安全地在结程间传递不可变借用 跨线程共享。
     pub mod mutex {
         use std::cell::RefCell;
         use std::rc::Rc;
@@ -297,6 +302,199 @@ pub mod quick_start {
                 println!("{}", started);
                 started = cvar.wait(started).unwrap();
                 println!("{}", started);
+            }
+        }
+    }
+
+    pub mod atomic {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        use std::sync::Arc;
+        use std::thread;
+        use std::time::Duration;
+
+        #[test]
+        fn test() {
+            let spinlock = Arc::new(AtomicUsize::new(1));
+            let spinlock2 = spinlock.clone();
+
+            let handle = thread::spawn(move || {
+                thread::sleep(Duration::from_secs(10));
+                spinlock2.store(0, Ordering::SeqCst);
+            });
+            while spinlock.load(Ordering::SeqCst) != 0 {
+                thread::sleep(Duration::from_secs(1));
+                println!("load {}", spinlock.load(Ordering::SeqCst))
+            }
+
+            if let Err(err) = handle.join() {
+                println!("thread had an error: {:?}", err);
+            } else {
+                println!("ok")
+            }
+        }
+    }
+
+    pub mod csp {
+        use std::sync::mpsc::{channel, sync_channel};
+        use std::thread;
+        use std::time::Duration;
+
+        #[test]
+        fn test() {
+            let (tx, rx) = channel();
+            let handle = thread::spawn(move || tx.send(10).unwrap());
+            let i = rx.recv().unwrap();
+            assert_eq!(i, 10);
+            handle.join().unwrap();
+        }
+
+        #[test]
+        fn test_channel() {
+            let (tx, rx) = channel::<i32>();
+            for i in 0..10 {
+                let tx = tx.clone();
+                thread::spawn(move || tx.send(i).unwrap());
+                let r = rx.recv().unwrap();
+                println!("{}", r);
+            }
+        }
+
+        #[test]
+        fn test_sync_channel() {
+            let (tx, rx) = sync_channel(4);
+            tx.send(1).unwrap();
+            let t2 = tx.clone();
+            println!("send 1");
+            thread::spawn(move || {
+                t2.send(2).unwrap();
+                println!("send 2");
+                thread::sleep(Duration::from_secs(1));
+                t2.send(3).unwrap();
+                println!("send 3");
+            });
+            tx.send(4).unwrap();
+            println!("send 4");
+            for _ in 0..4 {
+                println!("receive {}", rx.recv().unwrap());
+            }
+        }
+
+        #[test]
+        fn test_sync_channel2() {
+            let (tx, rx) = sync_channel(4);
+            tx.send(1).unwrap();
+            let t2 = tx.clone();
+            println!("send 1");
+            thread::spawn(move || {
+                t2.send(2).unwrap();
+                println!("send 2");
+                thread::sleep(Duration::from_secs(1));
+                t2.send(3).unwrap();
+                println!("send 3");
+            });
+            let rh = thread::spawn(move || {
+                for _ in 0..4 {
+                    println!("receive {}", rx.recv().unwrap());
+                }
+            });
+            tx.send(4).unwrap();
+            println!("send 4");
+            rh.join().unwrap();
+        }
+
+        #[test]
+        //共享通道
+        fn test_dead_lock() {
+            let (tx, rx) = channel();
+            for i in 0..5 {
+                let tx = tx.clone();
+                thread::spawn(move || {
+                    tx.send(i).unwrap();
+                });
+            }
+
+            //tx 没被析构，迭代器阻塞
+            for j in rx.iter() {
+                println!("{}", j);
+            }
+        }
+
+        #[test]
+        //流通道
+        fn test_fix_dead_lock() {
+            let (tx, rx) = channel();
+            thread::spawn(move || {
+                tx.send(1).unwrap();
+                tx.send(2).unwrap();
+                tx.send(3).unwrap();
+            });
+            //tx 被析构
+            for j in rx.iter() {
+                println!("{}", j);
+            }
+        }
+    }
+    pub mod pow {
+        use crypto::digest::Digest;
+        use crypto::sha2::Sha256;
+        use itertools::Itertools;
+        use std::sync::atomic::{AtomicBool, Ordering};
+        use std::sync::{mpsc, Arc};
+        use std::thread;
+
+        const BASE: usize = 42;
+        const THREADS: usize = 8;
+        static DIFFICULTY: &'static str = "000000";
+        struct Solution(usize, String);
+
+        fn verify(number: usize) -> Option<Solution> {
+            let mut hasher = Sha256::new();
+            hasher.input_str(&(number * BASE).to_string());
+            let hash: String = hasher.result_str();
+            if hash.starts_with(DIFFICULTY) {
+                Some(Solution(number, hash))
+            } else {
+                None
+            }
+        }
+
+        fn find(start_at: usize, sender: mpsc::Sender<Solution>, is_found: Arc<AtomicBool>) {
+            for number in (start_at..).step_by(THREADS) {
+                if is_found.load(Ordering::Relaxed) {
+                    return;
+                }
+                if let Some(solution) = verify(number) {
+                    is_found.store(true, Ordering::Relaxed);
+                    sender.send(solution).unwrap();
+                    return;
+                }
+            }
+        }
+
+        #[test]
+        fn test() {
+            println!(
+                "PoW: Find a number, SHA256(the number * {}) ==\"{}.....\"",
+                BASE, DIFFICULTY
+            );
+            println!("Start {} threads", THREADS);
+            println!("wait...");
+            let is_found = Arc::new(AtomicBool::new(false));
+            let (s, r) = mpsc::channel();
+            for i in 0..THREADS {
+                let s = s.clone();
+                let is_found = is_found.clone();
+                thread::spawn(move || find(i, s, is_found));
+            }
+
+            match r.recv() {
+                Ok(Solution(i, hash)) => {
+                    println!("found...");
+                    println!("number is {} and hash is {}", i, hash);
+                }
+                Err(e) => {
+                    println!("no found:{}", e);
+                }
             }
         }
     }
