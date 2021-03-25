@@ -121,6 +121,7 @@ pub mod fn_test {
         fn counter(i: i32) -> impl Fn(i32) -> i32 {
             move |n: i32| n + i
         }
+
         #[test]
         fn common() {
             let f = counter(3);
@@ -284,9 +285,77 @@ pub mod fn_test {
             fn main() {
                 // Define a closure satisfying the `Fn` bound
                 let closure = || println!("I'm a closure!");
-
                 call_me(closure);
                 call_me(function);
+            }
+
+            fn boxed_closure(c: &mut Vec<Box<dyn Fn()>>) {
+                let s = "second";
+                c.push(Box::new(|| println!("first")));
+                c.push(Box::new(move || println!("{}", s)));
+                c.push(Box::new(|| println!("third")));
+            }
+
+            #[test]
+            fn test_boxed_closure() {
+                let mut c: Vec<Box<dyn Fn()>> = vec![];
+                boxed_closure(&mut c);
+                for f in c {
+                    f();
+                }
+            }
+
+            pub mod p {
+                trait Any {
+                    fn any<F>(&self, f: F) -> bool
+                    where
+                        Self: Sized,
+                        F: Fn(u32) -> bool;
+                }
+
+                impl Any for Vec<u32> {
+                    fn any<F>(&self, f: F) -> bool
+                    where
+                        Self: Sized,
+                        F: Fn(u32) -> bool,
+                    {
+                        for &x in self {
+                            if f(x) {
+                                return true;
+                            }
+                        }
+                        false
+                    }
+                }
+                #[test]
+                fn run() {
+                    let v = vec![1, 2, 3];
+                    let b = v.any(|x| x == 3);
+                    println!("{}", b);
+                }
+
+                fn call<F>(f: F) -> i32
+                where
+                    F: Fn(i32) -> i32,
+                {
+                    f(10)
+                }
+                fn call2<F>(f: F, i: i32) -> i32
+                where
+                    F: Fn(i32) -> i32,
+                {
+                    f(i)
+                }
+                fn counter(i: i32) -> i32 {
+                    i + 1
+                }
+                #[test]
+                fn r2() {
+                    let res = call(counter);
+                    println!("{:?}", res);
+                    let res = call2(counter, 10);
+                    println!("{:?}", res);
+                }
             }
         }
 
@@ -297,13 +366,13 @@ pub mod fn_test {
                 move || println!("This is a: {}", text)
             }
 
-            fn create_fnmut() -> impl FnMut() {
+            fn create_fn_mut() -> impl FnMut() {
                 let text = "FnMut".to_owned();
 
                 move || println!("This is a: {}", text)
             }
 
-            fn create_fnonce() -> impl FnOnce() {
+            fn create_fn_once() -> impl FnOnce() {
                 let text = "FnOnce".to_owned();
 
                 move || println!("This is a: {}", text)
@@ -312,8 +381,8 @@ pub mod fn_test {
             #[test]
             fn main() {
                 let fn_plain = create_fn();
-                let mut fn_mut = create_fnmut();
-                let fn_once = create_fnonce();
+                let mut fn_mut = create_fn_mut();
+                let fn_once = create_fn_once();
 
                 fn_plain();
                 fn_mut();
@@ -337,8 +406,21 @@ pub mod fn_test {
         }
     }
 
+    // • FnOnce , 表示闭包通过转移所有权来捕获环境中的自由变量 ,同时意味着该闭包没
+    // 有改变环境的能力,只能调用一次 ,因为该闭包会消耗自身。对应self。
+    // ·对于移动语义类型,执行移动语义 ,转移所有权来进行捕获。
     mod fn_once {
         use std::fmt::{Debug, Display};
+
+        #[test]
+        fn test_fn_once() {
+            let s: String = "hello world".to_string();
+            println!("{}", s);
+            let f = || s;
+            f();
+            //error[E0382]: borrow of moved value: `s`
+            // println!("{}", s);
+        }
 
         fn consume_with_relish<F: FnOnce() -> String>(func: F) {
             // `func` consumes its captured variables, so it cannot be run more
@@ -383,7 +465,23 @@ pub mod fn_test {
         }
     }
 
+    // • FnMut ,表示闭包以可变借用的方式来捕获环境中的自由变量 ,同时意味着该闭包有
+    // 改变环境的能力 ,也可以多次调用 。 对应&mut self。
+    // ·对于可变绑定,并且在闭包中包含对其进行修改的操作,则以可变引用(&mut T)来进行捕获 。
     mod fn_mut {
+        #[test]
+        fn test_fn_mut() {
+            let mut s: &str = "string";
+            println!("{}", s);
+            let mut f = || s = "other";
+            f();
+            println!("{}", s);
+            let mut f = || s = "other";
+            f();
+            f();
+            println!("{}", s);
+        }
+
         fn do_twice<F>(mut func: F)
         where
             F: FnMut(),
@@ -428,7 +526,20 @@ pub mod fn_test {
         }
     }
 
+    // Fn ,表示闭包以不可变借用的方式来捕获环境中的自由变量 ,同时也表示该闭包没有
+    // 改变环境的能力 , 并且可以多次调用。对应 &self。
+    // ·对于复制语义类型 ,以不可变引用 (&T)来进行捕获 。
     mod fn_test {
+        #[test]
+        fn test_fn() {
+            let s = "hello";
+            let f = move || println!("{:?}", s);
+            f();
+            f();
+            f();
+            println!("{}", s);
+        }
+
         fn call_with_one<F>(func: F, size: usize) -> usize
         where
             F: Fn(usize) -> usize,
@@ -444,3 +555,14 @@ pub mod fn_test {
         }
     }
 }
+
+// 如果闭包中没有捕获任何环境变量,则默认自动实现 Fn
+// · 如果闭包中捕获了复制语义类型的环境变量,则 :
+//      〉如果不需要修改环境变量,无论是否使用 move 关键字,均会自动实现 Fn 。
+//      〉如果需要修改环境变量 ,则自动实现 FnMut。
+// · 如果闭包中捕获了移动语义类型的环境变量,则 :
+//      〉如果不需要修改环境变量,且没有使用 move 关键字,则自动实现 FnOnce 。
+//      〉如果不需要修改环境变量,且使用了 move关键字,则自动实现 Fn 。
+//      〉如果需要修改环境变量,则自动实现 FnMut 。
+// · 使用 move 关键字,如果捕获的变量是复制语义类型的 ,则闭包会自动实现
+// Copy/Clone , 否则不会自动实现 Copy/Clone 。
