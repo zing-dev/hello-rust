@@ -63,7 +63,7 @@ fn are_you_on_windows() {
 fn are_you_on_windows() {
     println!("You are running windows!");
 }
-
+#[test]
 pub fn cfg() {
     are_you_on_linux();
     println!("Are you sure?");

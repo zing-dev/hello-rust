@@ -1,10 +1,85 @@
-pub mod str {
+pub mod str_test {
+    use std::str;
+
+    // • str， 表示固定长度的字符串。
+    // • String， 表示可增长的字符串。
+    // • CStr， 表示由C分配而被Rust借用的字符串，一般用于和C语言交互。
+    // • CString， 表示由 Rust 分配且可以传递给 C 函数使用的 C 字符串，同样用于和 C 语言交互。
+    // • OsStr， 表示和操作系统相关的字符串。这是为了兼容 Windows系统。
+    // • OsString，表示 OsStr 的可变版本。与 Rust 字符串可以相互转换。
+    // • Path，表示路径，定义于 std::path模块中。Path包装了 OsStr。
+    // • PathBuf. 跟 Path 配对，是 Path 的可变版本。PathBuf包装了 OsString。
+
+    // ·静态存储区。有代表性的是字符串字面量，&'static str类型的字符串被直接存储到己编译的可执行文件中，随着程序一起加载启动。
+    // ·堆分配。 如果&str类型的字符串是通过堆String类型的字符串取切片生成的，则存储在堆上。
+    //  因为 String 类型的字符串是堆分配的，&str只不过是其在堆上的切片。
+    // ·栈分配。 比如使用 str::from_utf8方法，就可以将战分配的[u8;N]数组转换为一个&str 字符串
+
+    // String类型 由三部分组成:指向堆中字节序列的指针 Cas_p位方法)、 记录 堆中字节序列的字节长度 C!en方法) 和堆分配的容量 (capacity方法〉
+    #[test]
+    fn test_string() {
+        let mut str = String::from("hello world");
+        println!(
+            "{:p},{:p},{} {}",
+            str.as_ptr(),
+            &str,
+            str.len(),
+            str.capacity()
+        );
+
+        str.reserve(10);
+        println!(
+            "{:p},{:p},{} {}",
+            str.as_ptr(),
+            &str,
+            str.len(),
+            str.capacity()
+        );
+        //as_ptr 获取的是堆中字节序列的指针地址
+        //引用 &a 的地址为字符串变量在栈上指针的地址，
+        //len方法获取的是堆中字节序列的字节数，非字符个数
+
+        let string: String = String::new();
+        assert_eq!("", string);
+        let string: String = String::from("hello rust");
+        assert_eq!("hello rust", string);
+        let string: String = String::with_capacity(20);
+        assert_eq!("", string);
+        let str: &'static str = "the tao of rust";
+        let string: String = str.chars().filter(|c| !c.is_whitespace()).collect();
+        assert_eq!("thetaoofrust", string);
+        let string: String = str.to_owned();
+        assert_eq!("the tao of rust", string);
+        let string: String = str.to_string();
+        let str: &str = &string[11..15];
+        assert_eq!("rust", str);
+    }
+
+    #[test]
+    fn handle_string() {
+        let str = "hello";
+        let mut chars = str.chars();
+        assert_eq!(Some('h'), chars.next());
+        assert_eq!(Some('e'), chars.next());
+        assert_eq!(Some('l'), chars.next());
+        assert_eq!(Some('l'), chars.next());
+        assert_eq!(Some('o'), chars.next());
+        let mut bytes = str.bytes();
+        assert_eq!(5, str.len());
+        for byte in bytes {
+            println!("{}", byte)
+        }
+    }
+
     #[test]
     fn test() {
         let hello_world = "Hello, World!";
         println!("{}", hello_world);
         let hello_world: &'static str = "Hello, world!";
         println!("{}", hello_world);
+        let tao = str::from_utf8(&[0xE9u8, 0x81u8, 0x93u8]).unwrap();
+        println!("{}", tao); //道
+        println!("{}", String::from("\u{9053}"))
     }
 
     #[test]

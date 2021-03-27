@@ -1,6 +1,17 @@
 pub mod char_test {
 
     #[test]
+    fn main() {
+        let tao = '道';
+        let tao_u32 = tao as u32;
+        println!("{} {} {}", tao, tao_u32, tao.len_utf8()); //道 36947 3
+        println!("U+{}", tao_u32);
+        println!("{}", tao.escape_unicode());
+        assert_eq!(char::from(65), 'A');
+        assert_eq!(std::char::from_u32(tao_u32), Some(tao));
+    }
+
+    #[test]
     fn common() {
         let c = '🤣';
         println!("{}", c);
