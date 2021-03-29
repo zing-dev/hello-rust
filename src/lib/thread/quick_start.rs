@@ -388,7 +388,7 @@ pub mod quick_start {
             thread::spawn(move || {
                 t2.send(2).unwrap();
                 println!("send 2");
-                thread::sleep(Duration::from_secs(1));
+                thread::sleep(Duration::from_secs(10));
                 t2.send(3).unwrap();
                 println!("send 3");
             });

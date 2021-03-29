@@ -1,4 +1,5 @@
 pub mod str_test {
+    use itertools::chain;
     use std::str;
 
     // • str， 表示固定长度的字符串。
@@ -64,11 +65,166 @@ pub mod str_test {
         assert_eq!(Some('l'), chars.next());
         assert_eq!(Some('l'), chars.next());
         assert_eq!(Some('o'), chars.next());
-        let mut bytes = str.bytes();
+        let bytes = str.bytes();
         assert_eq!(5, str.len());
         for byte in bytes {
             println!("{}", byte)
         }
+
+        let str = "hello rust".to_owned();
+        let (str1, str2) = str.split_at(5);
+        println!("{}{},{}{}", str1, str1.len(), str2, str2.len());
+
+        let s = "Per Martin-Löf";
+        let (first, last) = s.split_at(3);
+        assert_eq!("Per", first);
+        assert_eq!(" Martin-Löf", last);
+    }
+
+    //字符串的查找
+    // .存在性判断，contains、starts_with、ends_with
+    #[test]
+    fn exist() {
+        let str = "hello world";
+        println!("{}", str.contains(" ")); //true
+        println!("{}", str.contains("")); //true
+        println!("{}", str.contains("\\b")); //false
+
+        println!("{}", str.starts_with("")); //true
+        println!("{}", str.starts_with("h")); //true
+        println!("{}", str.starts_with("hello")); //true
+        println!("{}", str.starts_with(" hello")); //false
+
+        println!("{}", str.ends_with("")); //true
+        println!("{}", str.ends_with("l")); //false
+        println!("{}", str.ends_with("world")); //true
+        println!("{}", str.ends_with(" world")); //true
+    }
+
+    // .位置匹配,find、rfind
+    #[test]
+    fn find() {
+        let s = "Löwe 老虎 Léopard 奤 🦐";
+        let s: String = s
+            .to_string()
+            .chars()
+            .enumerate()
+            .map(|(i, c)| {
+                println!(
+                    "find  {} '{}' {} {}",
+                    i,
+                    c,
+                    c.len_utf8(),
+                    s.find(c).unwrap()
+                );
+                println!(
+                    "rfind {} '{}' {} {}",
+                    i,
+                    c,
+                    c.len_utf8(),
+                    s.rfind(c).unwrap()
+                );
+                c
+            })
+            .collect();
+        println!("{}", s);
+        // let x: &[_] = &['1', '2'];
+    }
+
+    // ·分割字符串,split、rsplit、split_terminator、rsplit_terminator、splitn、rsplitn
+    #[test]
+    fn split() {
+        let s = "Löwe 老虎 Léopard 奤 🦐";
+        let vec = s
+            .split(|c| (c as u32) >= (0x4e00 as u32) && (c as u32) <= (0x9fa5 as u32))
+            .collect::<Vec<&str>>();
+        println!("{:?} {} {}", vec, vec.len(), vec[0]);
+        println!(
+            "{:?}",
+            "abcdefghijklmnopqrstuvwxyz"
+                .split(|c| c == 'l' || c == 'x')
+                .collect::<Vec<&str>>()
+        )
+    }
+
+    // .捕获匹配,matches、rmatches 、match_indices、rmatch_indices
+    #[test]
+    fn matches() {
+        let s = "Löwe 老虎 Léopard 奤 🦐";
+        println!("{:?}", s.matches("老虎").collect::<Vec<&str>>());
+        println!(
+            "{:?}",
+            s.rmatches(char::is_alphabetic).collect::<Vec<&str>>()
+        );
+        println!(
+            "{:?}",
+            s.match_indices(char::is_alphabetic).collect::<Vec<_>>()
+        );
+        println!(
+            "{:?}",
+            "labc2abc3"
+                .rmatches(char::is_numeric)
+                .collect::<Vec<&str>>()
+        )
+    }
+
+    // ·删除匹配,trim_matches 、trim_left_matches 、trim_right_matches
+    #[test]
+    fn trim() {
+        let s = "123 Hello\tworld\t123";
+        println!("{}", s.trim());
+        println!("{}", s.trim_matches('\t'));
+        println!("{}", s.trim_matches(char::is_numeric));
+        println!("{}", s.trim_start());
+        println!("{}", s.trim_end());
+    }
+
+    // ·替代匹配,replace、replacen
+    #[test]
+    fn replace() {
+        let s = "this is old";
+        assert_eq!("this is new", s.replace("old", "new"));
+        let s = "this is old";
+        assert_eq!(s, s.replace("cookie monster", "little lamb"));
+    }
+
+    #[test]
+    fn parse() {
+        let four: u32 = "4".parse().unwrap();
+        assert_eq!(4, four);
+        let four = "4".parse::<u32>();
+        assert_eq!(Ok(4), four);
+    }
+
+    // · 填充字符串宽度 。格式为{:number},其中 number 表示数字。如 number的长度小于字符串长度,则什么都不做;
+    // 如果number 的长度大于字符串的长度,则会默认填充空格来扩展字符串的长度
+    // · 截取字符串 。格式为{:.number },注意number前面有符号 "." ,number代表要截取的字符长度,和填充格式配合使用
+    // · 对齐字符串 。格式为 {:>} 、{:^}和{:<}, 分布表示左对齐 、位于中间和 右对齐。
+    // · 符号+, 表示强制输出整数的正负符号。
+    // · 符号#, 用于显示进制的前缀。比如十六进制显示Ox, 二进制显示Ob 。
+    // . 数字0, 用于把默认填充的空格替换为数字0 。
+    #[test]
+    fn format() {
+        let str: String = format!("{} Rust", "Hello");
+        println!("{}", str); //Hello Rust
+        println!("{}", format!("{:5}", str)); //Hello Rust
+        println!("{}", format!("{:5.3}", str)); //Hel
+        println!("{}", format!("{:10}", str)); //Hello Rust
+        println!("{}", format!("{:<12}", str)); //Hello Rust
+        println!("{}", format!("{:>12}", str)); //  Hello Rust
+        println!("{}", format!("{:^12}", str)); // Hello Rust
+        println!("{}", format!("{:^12.5}", str)); //   Hello
+        println!("{}", format!("{:=^12.5}", str)); //===Hello====
+        println!("{}", format!("{:*^12.5}", str)); //***Hello****
+        println!("{}", format!("{:5}", "th\u{e9}")); //thé
+
+        println!("{}", format!("{:.4}", 1234.5678)); //1234.5678
+        println!("{}", format!("{:.2}", 1234.5618)); //1234.56
+        println!("{}", format!("{:.2}", 1234.5678)); //1234.57
+        println!("`{}`", format!("{:<10.4}", 1234.5678)); //`1234.5678 `
+        println!("`{}`", format!("{:<12.2}", 1234.5678)); //`1234.57     `
+        println!("`{}`", format!("{:0^12.2}", 1234.5678)); //`001234.57000`
+        println!("`{}`", format!("{:e}", 1234.5678)); //`1.2345678e3`
     }
 
     #[test]
@@ -79,7 +235,25 @@ pub mod str_test {
         println!("{}", hello_world);
         let tao = str::from_utf8(&[0xE9u8, 0x81u8, 0x93u8]).unwrap();
         println!("{}", tao); //道
-        println!("{}", String::from("\u{9053}"))
+        println!("{}", String::from("\u{9053}"));
+
+        let s = r"1234
+                        5678
+                        9876
+                        4321";
+        let (mut x, mut y) = (0, 0);
+        for (idx, val) in s.lines().enumerate() {
+            let val = val.trim();
+            let left = val.get(idx..idx + 1).unwrap().parse::<u32>().unwrap();
+            let right = val
+                .get((3 - idx)..(3 - idx + 1))
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+            x += left;
+            y += right;
+        }
+        println!("{}", x + y);
     }
 
     #[test]
@@ -88,15 +262,6 @@ pub mod str_test {
         let boxed_str = s.to_owned().into_boxed_str();
         let boxed_bytes = boxed_str.into_boxed_bytes();
         assert_eq!(*boxed_bytes, *s.as_bytes());
-    }
-
-    #[test]
-    fn replace() {
-        let s = "this is old";
-        assert_eq!("this is new", s.replace("old", "new"));
-
-        let s = "this is old";
-        assert_eq!(s, s.replace("cookie monster", "little lamb"));
     }
 
     #[test]
@@ -136,7 +301,6 @@ pub mod str_test {
     }
 
     mod from_str {
-
         #[test]
         fn test() {
             use std::str::FromStr;
