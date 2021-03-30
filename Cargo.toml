@@ -35,7 +35,7 @@ actix-http = "1.0.1"
 serial = "0.4"
 itertools = "0.10.0"
 rust-crypto = "0.2.36"
-
+serde = "1.0.125"
 env_logger = "0.6"
 
 [dependencies.rusqlite]
