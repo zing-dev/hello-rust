@@ -3,13 +3,13 @@
 #![allow(unused_imports)]
 
 pub mod learn;
+pub mod leetcode;
 pub mod lib;
 pub mod test;
-pub mod leetcode;
 
 fn types() {
     use learn::types;
-    types::cast();
+    // types::cast();
     // types::literals();
     // types::inference();
     // types::alias()
@@ -91,7 +91,6 @@ fn attribute() {
     use learn::attribute;
 
     attribute::dead_code();
-    attribute::cfg();
 }
 
 fn generics() {

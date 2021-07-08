@@ -34,7 +34,7 @@ pub fn dead_code() {
 
     #[allow(dead_code)]
     fn noisy_unused_function() {}
-// FIXME ^ Add an attribute to suppress the warning
+    // FIXME ^ Add an attribute to suppress the warning
 
     used_function();
     unused_function();
@@ -58,11 +58,11 @@ fn are_you_on_windows() {
     println!("You are *not* running windows!");
 }
 
-
 #[cfg(target_os = "windows")]
 fn are_you_on_windows() {
     println!("You are running windows!");
 }
+
 #[test]
 pub fn cfg() {
     are_you_on_linux();

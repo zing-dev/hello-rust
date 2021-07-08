@@ -9,6 +9,7 @@
 // meta：元信息条目，例如 #[…]和 #![rust macro…] 属性
 // tt：词条树
 
+#[allow(unused_macros)]
 macro_rules! first {
     () => {};
 }
@@ -18,6 +19,7 @@ fn first() {
     first!();
 }
 
+#[allow(unused_macros)]
 macro_rules! hello {
     ($name:expr) => {
         println!("hello {}", $name)
@@ -29,6 +31,7 @@ fn hello() {
     hello!("world");
 }
 
+#[allow(unused_macros)]
 macro_rules! foo {
     (x => $e:expr) => {
         println!("mode X: {}", $e)
@@ -44,6 +47,7 @@ fn foo() {
     foo!(x => 4);
 }
 
+#[allow(unused_macros)]
 macro_rules! o_o {
 ($($x:expr; [ $( $y:expr ),* ]);*) => {&[ $($( $x + $y ),*),* ]}}
 
@@ -53,6 +57,7 @@ fn o_o() {
     assert_eq!(a, [11, 12, 13, 24, 25, 26]);
 }
 
+#[allow(unused_macros)]
 macro_rules! five_times {
     ($x:expr) => {
         5 * $x
@@ -63,6 +68,8 @@ macro_rules! five_times {
 fn five_times() {
     assert_eq!(25, five_times!(2 + 3));
 }
+
+#[allow(unused_macros)]
 macro_rules! log {
     ($msg:expr) => {{
         let state: i32 = 10;
@@ -78,6 +85,7 @@ fn log() {
     log!(state);
 }
 
+#[allow(unused_macros)]
 macro_rules! foo2 {
     ($v:ident) => {
         let $v = 3;
