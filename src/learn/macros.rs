@@ -12,7 +12,7 @@ pub mod macros {
     fn panic() {
         panic!();
         panic!("this is a terrible mistake!");
-        panic!(4); // panic with the value of 4 to be collected elsewhere
+        //panic!(4); // panic with the value of 4 to be collected elsewhere
         panic!("this is a {} {message}", "fancy", message = "message");
     }
 
@@ -250,7 +250,7 @@ pub mod macros {
         let one_plus_one = stringify!(1 + 1);
         assert_eq!(one_plus_one, "1 + 1");
         println!(stringify!(true));
-        println!(stringify!(1.1.1.1));
+        println!(stringify!(1.1.1 .1));
     }
 
     #[test]

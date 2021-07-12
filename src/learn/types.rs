@@ -65,7 +65,8 @@ pub fn literals() {
         foo: Foo,
         qux: (),
         baz: [u8; 0],
-    };
+    }
+
     struct Person<'a, 'b> {
         // The 'a defines a lifetime
         name: &'a str,

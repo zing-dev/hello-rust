@@ -19,7 +19,7 @@ mod net {
     fn client() -> io::Result<()> {
         let mut stream = match TcpStream::connect("127.0.0.1:8080") {
             Ok(stream) => stream,
-            Err(err) => panic!(err),
+            Err(err) => panic!("{}", err),
         };
         stream.set_read_timeout(Some(Duration::new(0, 0)))?;
         stream.set_write_timeout(Some(Duration::new(0, 0)))?;

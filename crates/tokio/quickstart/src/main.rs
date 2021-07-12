@@ -28,7 +28,7 @@ async fn test_spawn2() {
 
 #[allow(dead_code)]
 #[allow(unused_must_use)]
-async fn test_spawn3() {
+fn test_spawn3() {
     tokio::spawn(async {
         // The scope forces `rc` to drop before `.await`.
         {
@@ -42,7 +42,13 @@ async fn test_spawn3() {
     });
 }
 
+pub mod channels;
+
 #[tokio::main]
 async fn main() {
+    use channels::channels;
     test_spawn3();
+    channels::test();
+    channels::channel().await;
+    channels::oneshot().await;
 }
