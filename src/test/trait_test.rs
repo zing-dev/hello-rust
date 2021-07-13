@@ -297,6 +297,7 @@ pub mod trait_test {
 
         // Notice that the implementation uses the associated type `Output`.
         impl<T: Add<Output = T>> Add for Point<T> {
+            //关联类型Output 必须指定具体类型
             type Output = Self;
             fn add(self, other: Self) -> Self::Output {
                 Self {
@@ -306,12 +307,63 @@ pub mod trait_test {
             }
         }
 
+        // Rust遵循一条重要的规则：孤儿规则(Orphan Rule)
+        // 如果要实现某个trait,该trait和要实现该trait的类型至少有一个要在当前crate中定义
+        trait MyAdd<RHS = Self> {
+            type Output;
+            fn my_add(self, rhs: RHS) -> Self::Output;
+        }
+
+        impl MyAdd<u64> for u32 {
+            type Output = u64;
+            fn my_add(self, rhs: u64) -> Self::Output {
+                self as u64 + rhs
+            }
+        }
+
+        // trait继承
+        trait Page {
+            fn set_page(&mut self, p: i32) {
+                println!("page default:{}", p)
+            }
+        }
+
+        trait PerPage {
+            fn set_per_page(&mut self, p: i32) {
+                println!("per page default:{}", p)
+            }
+        }
+
+        trait Paginate: Page + PerPage {
+            fn set_skip_page(&mut self, num: i32) {
+                println!("skip page: {}", num)
+            }
+        }
+
+        struct MyPage {
+            page: i32,
+        }
+
+        impl Page for MyPage {}
+
+        impl PerPage for MyPage {}
+
+        //impl Paginate for MyPage {}
+
+        impl<T: Page + PerPage> Paginate for T {}
+
         #[test]
         fn run() {
             println!("Foo + Bar = {:?}", Foo + Bar);
             println!("Bar + Foo = {:?}", Bar + Foo);
             println!("Bar + Foo + Foo + Bar = {:?}", (Bar + Foo) + (Foo + Bar));
-            println!("{:?}", Point { x: 1, y: 2 } + Point { x: 11, y: 12 })
+            println!("{:?}", Point { x: 1, y: 2 } + Point { x: 11, y: 12 });
+            println!("{:?}", 1.my_add(2));
+
+            let mut p = MyPage { page: 10 };
+            p.set_page(1);
+            p.set_per_page(2);
+            p.set_skip_page(20)
         }
     }
 
@@ -362,14 +414,10 @@ pub mod trait_test {
                 retweet: false,
             }
         }
-        /*fn to_summary2<'a>() -> &'a dyn Summary {
-            &Tweet {
-                username: String::from("horse_ebooks"),
-                content: String::from("of course, as you probably already know, people"),
-                reply: false,
-                retweet: false,
-            }
-        }*/
+
+        fn to_summary2() -> Box<dyn Summary> {
+            Box::new(to_summary())
+        }
 
         #[test]
         fn test() {
@@ -383,7 +431,7 @@ pub mod trait_test {
             from_summary2(&tweet);
 
             println!("{}", to_summary().summarize());
-            //println!("{}", to_summary2().summarize());
+            println!("{}", to_summary2().summarize());
         }
     }
 }
