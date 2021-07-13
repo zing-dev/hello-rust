@@ -130,9 +130,6 @@ enum Language {
 #[test]
 fn use_test() {
     fn run() {
-        // use crate::test::custom_types::Language;
-        // use crate::test::custom_types::Status::{Poor, Rich};
-        // use crate::test::custom_types::Work::*;
         use crate::test::custom_types::{
             Language,
             Status::*,

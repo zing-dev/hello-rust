@@ -1,4 +1,48 @@
 pub mod trait_test {
+    mod quick_start {
+        struct Duck;
+
+        struct Pig;
+
+        trait Fly {
+            fn fly(&self) -> bool;
+        }
+
+        impl Fly for Pig {
+            fn fly(&self) -> bool {
+                false
+            }
+        }
+
+        impl Fly for Duck {
+            fn fly(&self) -> bool {
+                true
+            }
+        }
+
+        // 静态分发
+        // Rust 编译器会为fly_static::<Pig>(pig)和fly_static::<Duck>(duck)这两个具体类型的调用生成特殊化的代码
+        fn fly_static<T: Fly>(s: T) -> bool {
+            s.fly()
+        }
+
+        // 动态分发
+        // 它会在运行时查找相应类型的方法,会带来一定的运行时开销,不过这种开销很小
+        fn fly_dyn(s: &dyn Fly) -> bool {
+            s.fly()
+        }
+
+        #[test]
+        fn test() {
+            let pig = Pig;
+            assert_eq!(fly_static::<Pig>(pig), false);
+            let duck = Duck;
+            assert_eq!(fly_static::<Duck>(duck), true);
+            assert_eq!(fly_dyn(&Pig), false);
+            assert_eq!(fly_dyn(&Duck), true);
+        }
+    }
+
     mod common {
         struct Sheep {
             naked: bool,

@@ -1,4 +1,16 @@
 #[test]
+fn quick_start() {
+    let number = 42;
+    match number {
+        0 => println!("0"),
+        1...3 => println!("1...3"),
+        5 | 7 | 13 => println!("5|7|13"),
+        n @ 42 => println!("n:{}", n),
+        _ => println!("default"),
+    }
+}
+
+#[test]
 fn tuples() {
     let a = (1, 2);
     match a {
@@ -57,21 +69,22 @@ fn enums() {
 #[test]
 fn pointers() {
     let reference = &4;
-
+    // reference 地址
+    // *reference 值
     match reference {
-        &val => println!("Got a value via destructuring: {:?}", val),
+        &val => println!("i32 {:?} {:?}", val, &val),
     }
 
     match reference {
-        val => println!("Got a value via destructuring: {:?}", val),
+        val => println!("&i32 {:?} {:?}", val, &val),
     }
 
     match *reference {
-        val => println!("Got a value via destructuring: {:?}", val),
+        val => println!("i32 {:?} {:?}", val, &val),
     }
 
     match *reference {
-        ref val => println!("Got a value via destructuring: {:?}", val),
+        ref val => println!("&i32 {:?} {:?}", val, &val),
     }
 
     // What if you don't start with a reference? `reference` was a `&`
