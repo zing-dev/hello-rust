@@ -355,3 +355,206 @@ pub mod abstract_type {
 - `Copy trait` ,用来标识可以按位复制其值的类型.
 - `Send trait` ,用来标识可以跨线程安全通信的类型.
 - `Sync trait`,用来标识可以在线程间安全共享引用的类型.
+
+##### **Sized trait**
+
+**编译器用它来识别可以在编译期确定大小的类型**
+
+```rust
+// 属性lang 表示Sized trait 供Rust语言本身使用,
+// 声明为sized,称为语言项Lang Item
+#[lang = "sized"]
+pub trait Sized {}
+```
+
+`Sized`标识的是在编译期可确定大小的类型,而`Unsize`标识的是动态大小类型,在编译期无法确定其大小,目前Rust中的动态类型有`trait`和`[T］`,其中`[T]`代表一定数量的`T`在内存
+中依次排列,但不知道具体的数量,所以它的大小是未知的,用`Unsize`来标记.比如`str`字符串和定长数组`[T;N]` .`[T]`其实是`[T;N]` 的特例, 当`N`的大小未知时就是`[T]` .
+
+`?Sized` 标识的类型包含了`Sized`和`Unsize`所标识的两种类型
+
+- 只可以通过胖指针来操作`Unsize`类型,比如`&[T]` 或`&Trait`
+- 变量、参数和枚举变量不能使用动态大小类型.
+- 结构体中只有最后一个字段可以使用动态大小类型,其他字段不可以使用.
+
+##### **Copy trait**
+
+`Copy trait`用来标记可以按位复制其值的类型,按位复制等价于C语言中的`memcpy`
+
+```rust
+#[lang = "copy"]
+pub trait Copy: Clone {}
+
+pub trait Clone: Sized {
+    fn clone(&self) -> Self;
+    fn clone_from(&mut self, source: &Self) {
+        *self = source.clone()
+    }
+}
+```
+
+`Copy`的行为是一个隐式的行为,开发者不能重载`Copy`行为,它永远都是一个简单的位复制.
+
+并非所有类型都可以实现`Copy trait`.对于自定义类型来说,必须让所有的成员都实现了`Copy trait`,这个类型才有资格实现`Copy trait`.如果是数组类型,且其内部元素都是`Copy`类型,则数组本身就是`Copy`
+类型；如果是元组类型,且其内部元素都是`Copy`类型,则该元组会自动实现`Copy` ,如果是结构体或枚举类型,只有当每个内部成员都实现`Copy`,它才可以实现`Copy`
+
+##### **Send trait 和 Sync trait**
+
+- 实现了`Send`的类型, 可以安全地在线程间传递值,也就是说可以跨线程传递所有权.
+- 实现了`Sync`的类型, 可以跨线程安全地传递共享(不可变)引用.
+
+可以安全跨线程传递的值和引用,以及不可以跨线程传递的值和引用,配合所有权机制,`Rust`能够在编译期就检查出数据竞争的隐患,
+
+```rust
+#[lang = "send"]
+pub unsafe trait Send {}
+
+#[lang = "sync"]
+pub unsafe trait Sync {}
+
+```
+
+```rust
+
+mod send_sync {
+    use std::rc::Rc;
+    use std::thread;
+
+    ///多线程共享不可变变量
+    #[test]
+    fn share() {
+        let x = vec![1, 2, 3, 4];
+        let s = thread::spawn(|| x);
+        s.join().unwrap();
+    }
+
+    /// 多线程之间共享可变变量
+    #[test]
+    fn share_mut() {
+        let mut x = vec![1, 2, 3, 4];
+        thread::spawn(move || x.push(1));
+        // x.push(2)
+    }
+
+    /// 在多线程之间传递没有实现Send和Sync的类型
+    #[test]
+    fn share_rc() {
+        //Re 是用于引用计数的智能指针
+        let x = Rc::new(vec![1, 2, 3, 4]);
+        thread::spawn(move || x[1]);
+        //`Rc<Vec<i32>>` cannot be sent between threads safely
+    }
+}
+```
+
+### 类型转换
+
+- 隐式(强制)类型转换`Implicit Type Conversion`
+- 显示类型转换`Explicit Type Conversion`
+
+#### Deref解引用
+
+**如果一个类型`T`实现了`Deref<Target=U>`, 则该类型`T`的引用或智能指针在应用的时候会被自动转换为类型`U`**
+
+```rust
+pub trait Deref {
+    /// 解引用之后的目标类型
+    type Target: ?Sized;
+    fn deref(&self) -> &Self::Target;
+}
+
+pub trait DerefMut: Deref {
+    fn deref_mut(&mut self) -> &mut Self::Target;
+}
+```
+
+**手动解引用**
+
+- `match x.deref()`, 直接调用`deref`方法, 需要`use std::ops::Deref`.
+- `match x.as_ref()`, `String`类型提供了`as_ref`方法来返回一个`&str`类似,该方法定义于`AsRef trait`中.
+- `match x.borrow()`,方法`borrow`定义于`Borrow trait`中,行为和`AsRef`类型一样.需要`use std::borrow::Borrow` .
+- `match &*x`,使用`解引用`操作符,将`String`转换为`str`,然后再用`引用`操作符转为`&str`
+- `match &x[..]`,String 类型的index 操作可以返回`&str`类型.
+
+**无歧义完全限定语法**
+
+```rust
+mod limit {
+    struct S(i32);
+
+    trait A {
+        fn test(&self, i: i32);
+    }
+
+    trait B {
+        fn test(&self, i: i32);
+    }
+
+    impl A for S {
+        fn test(&self, i: i32) {
+            println!("from A: {:?}", i);
+        }
+    }
+
+    impl B for S {
+        fn test(&self, i: i32) {
+            println!("from B: {:?}", i);
+        }
+    }
+
+    #[test]
+    fn test() {
+        let s = S(1);
+        // 直接当作trait静态函数调用
+        A::test(&s, 1);
+        B::test(&s, 1);
+        // 使用as操作符
+        <S as A>::test(&s, 1);
+        <S as B>::test(&s, 1);
+    }
+}
+```
+
+**类型和子类型互相转换**
+
+```rust
+ mod static_as {
+    #[test]
+    fn test() {
+        let a: &'static str = "hello";
+        let b: &str = a as &str;
+        let c: &'static str = b as &'static str;
+
+        println!("{} {} {}", a, b, c)
+    }
+}
+
+```
+
+#### From和Into
+
+`From`和`Into`是定义于`std::convert`模块中的两个`trait`.它们定义了`from`和`into`两个方法,这两个方法互为反操作
+
+类型`U`实现了`From<T>`,则`T`类型实例调用`into`方法就可以转换为类型`U`
+
+```rust
+
+mod from_into {
+    #[derive(Debug)]
+    struct Person {
+        name: String,
+    }
+
+    impl Person {
+        fn new<T: Into<String>>(name: T) -> Person {
+            Person { name: name.into() }
+        }
+    }
+
+    #[test]
+    fn test_into() {
+        let p1 = Person::new("zing");
+        let p2 = Person::new("zing".to_string());
+        println!("{:?} {:?}", p1, p2);
+    }
+}
+```
