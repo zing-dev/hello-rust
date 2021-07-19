@@ -16,6 +16,8 @@ name = "example"
 members = [
     "crates/rand",
     "crates/tokio/quickstart",
+    "crates/winapi",
+    "crates/serde_json",
     "demo/hello-world",
     "demo/socket2/quick-start",
     "demo/diesel/sqlite/getting_started_step_1",
