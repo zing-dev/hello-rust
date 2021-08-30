@@ -1,4 +1,5 @@
 use serde_json::{Result, Value};
+use serde::{Serialize, Deserialize};
 
 fn main() {
     println!("Hello, world!");
@@ -43,4 +44,27 @@ fn test_json() {
 
     let x = serde_json::json!({"a":"girl"});
     println!("{} {} {} {}", x, x["a"], x.is_object(), x.to_string());
+}
+
+
+#[test]
+fn print_an_address() -> Result<()> {
+    #[derive(Serialize, Deserialize)]
+    struct Address {
+        street: String,
+        city: String,
+    }
+    // Some data structure.
+    let address = Address {
+        street: "10 Downing Street".to_owned(),
+        city: "London".to_owned(),
+    };
+
+    // Serialize it to a JSON string.
+    let j = serde_json::to_string(&address)?;
+
+    // Print, write to a file, or send to an HTTP server.
+    println!("{}", j);
+
+    Ok(())
 }
