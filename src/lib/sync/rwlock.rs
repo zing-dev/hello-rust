@@ -1,6 +1,8 @@
 pub mod rwlock {
     use std::sync::{Arc, RwLock};
     use std::thread;
+    use std::thread::sleep;
+    use std::time::Duration;
 
     #[test]
     fn test() {
@@ -34,7 +36,34 @@ pub mod rwlock {
             let r = c_lock.read();
             assert!(r.is_ok());
         })
-        .join()
-        .unwrap();
+            .join()
+            .unwrap();
+    }
+
+    #[test]
+    fn write_test() {
+        let lock = RwLock::new(1);
+        {
+            let mut n = lock.write().unwrap();
+            *n += 2;
+            println!("{}", n);
+            println!("{}", *n);
+        }
+        {
+            let n = lock.write().unwrap();
+            println!("{}", n);
+        }
+
+        let lock = RwLock::new("hello");
+        let mut str = lock.write().unwrap();
+        *str = "world";
+        println!("{}", str);
+    }
+
+    #[test]
+    fn read_test() {
+        let lock = RwLock::new(1);
+        let guard = lock.read().unwrap();
+        println!("{}", guard);
     }
 }
