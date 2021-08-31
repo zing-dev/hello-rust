@@ -1,4 +1,7 @@
 use serde::{Deserialize, Serialize};
+use std::thread::sleep;
+use std::time::Duration;
+use actix_web::dev::Server;
 
 pub mod start {
     use actix_web::{App, get, HttpResponse, HttpServer, post, Responder, web};
@@ -208,5 +211,11 @@ pub mod app {
 }
 
 pub mod server;
+pub mod handler;
+pub mod websockets;
 
-fn main() {}
+#[actix_web::main]
+pub async fn main() {
+    websockets::websocket().await;
+    sleep(Duration::from_secs(100));
+}

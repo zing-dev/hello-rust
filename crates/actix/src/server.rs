@@ -3,11 +3,12 @@ use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
 
-use actix_web::{App, HttpResponse, HttpServer, rt::System, web};
+use actix_web::{App, get, HttpRequest, HttpResponse, HttpServer, Responder, rt::System, web};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
 #[actix_web::main]
 #[test]
-async fn main() {
+async fn server() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
@@ -47,4 +48,19 @@ async fn main() {
     // stop server
     srv.stop(true).await;
     println!("stop...");
+}
+
+
+#[actix_web::main]
+#[test]
+async fn ssl() -> std::io::Result<()> {
+    #[get("/")]
+    async fn index(_: HttpRequest) -> impl Responder {
+        "welcome ssl"
+    }
+    // `openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder.set_private_key_file("key.pem", SslFiletype::PEM).unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+    HttpServer::new(|| App::new().service(index)).keep_alive(Some(20)).bind_openssl("0.0.0.0:9090", builder)?.run().await
 }
