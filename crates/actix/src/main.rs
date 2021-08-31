@@ -42,12 +42,11 @@ pub mod start {
         #[test]
         async fn scope() -> std::io::Result<()> {
             HttpServer::new(|| {
-                App::new().service(
-                    // prefixes all resources and routes attached to it...
-                    web::scope("/app")
-                        // ...so this handles requests for `GET /app/index.html`
-                        .route("/", web::get().to(|| HttpResponse::Forbidden().body("you are forbidden")))
-                        .route("/index.html", web::get().to(index)),
+                // prefixes all resources and routes attached to it...
+                App::new().service(web::scope("/app")
+                                       // ...so this handles requests for `GET /app/index.html`
+                                       .route("/", web::get().to(|| HttpResponse::Forbidden().body("you are forbidden")))
+                                       .route("/index.html", web::get().to(index)),
                 )
             })
                 .bind("0.0.0.0:9090")?
@@ -59,7 +58,7 @@ pub mod start {
     mod state {
         use std::sync::Mutex;
 
-        use actix_web::{App, get, HttpServer, web};
+        use actix_web::{App, get, HttpServer, web, HttpResponse};
         use serde::{Deserialize, Serialize};
 
         // This struct represents state
@@ -112,7 +111,8 @@ pub mod start {
         #[test]
         async fn state() -> std::io::Result<()> {
             HttpServer::new(|| {
-                let scope = web::scope("/users").service(users);
+                let scope = web::scope("/users").service(users)
+                    .service(web::resource("/ok").to(|| HttpResponse::Ok().body("ok")));
                 App::new()
                     .data(AppState {
                         app_name: String::from("Actix-web"),
@@ -136,7 +136,8 @@ struct Point {
     y: i32,
 }
 
-fn main() {
+#[test]
+fn json() {
     let point = Point { x: 1, y: 2 };
 
     let serialized = serde_json::to_string(&point).unwrap();
@@ -145,3 +146,67 @@ fn main() {
     let deserialized: Point = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);
 }
+
+
+pub mod app {
+    use actix_web::{App, HttpServer, web, guard, HttpResponse};
+    use actix_cors::Cors;
+
+    // this function could be located in a different module
+    fn config(cfg: &mut web::ServiceConfig) {
+        cfg.service(
+            web::resource("/app")
+                .route(web::get().to(|| HttpResponse::Ok().body("app")))
+                .route(web::head().to(|| HttpResponse::MethodNotAllowed())),
+        );
+    }
+
+    // this function could be located in a different module
+    fn scoped_config(cfg: &mut web::ServiceConfig) {
+        cfg.service(
+            web::resource("/test")
+                .route(web::get().to(|| HttpResponse::Ok().body("test")))
+                .route(web::head().to(|| HttpResponse::MethodNotAllowed())),
+        );
+    }
+
+    #[actix_web::main]
+    #[test]
+    async fn run() -> std::io::Result<()> {
+        HttpServer::new(|| {
+            let cors = Cors::default()
+                // .allowed_origin("https://www.rust-lang.org/")
+                .allow_any_origin()
+                // .allowed_origin_fn(|origin, _req_head| {
+                //     origin.as_bytes().ends_with(b".rust-lang.org")
+                // })
+                // .allowed_methods(vec!["GET", "POST"])
+                // .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                // .allowed_header(http::header::CONTENT_TYPE)
+                .allow_any_method()
+                .max_age(3600);
+            App::new()
+                .configure(config)
+                .wrap(cors)
+                .service(web::scope("/api").configure(scoped_config))
+                .service(
+                    web::scope("/")
+                        .guard(guard::Header("Host", "www.rust-lang.org"))
+                        .route("", web::to(|| HttpResponse::Ok().body("www"))),
+                )
+                .service(
+                    web::scope("/")
+                        .guard(guard::Header("Host", "localhost:9090"))
+                        .route("", web::to(|| HttpResponse::Ok().body("localhost ok..."))),
+                )
+                .route("/", web::to(|| HttpResponse::Ok().body("default route")))
+        })
+            .bind("0.0.0.0:9090")?
+            .run()
+            .await
+    }
+}
+
+pub mod server;
+
+fn main() {}
