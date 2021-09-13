@@ -27,7 +27,8 @@ members = [
 ]
 exclude = [
     "crates/libusb",
-    "crates/actix"
+    "crates/actix",
+    "crates/libusb-sys-demo"
 ]
 
 

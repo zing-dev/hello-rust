@@ -39,6 +39,7 @@ name = "libusb-demo"
 version = "0.1.0"
 dependencies = [
  "libusb",
+ "libusb-sys",
  "pkg-config",
 ]
 
