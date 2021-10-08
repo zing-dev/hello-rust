@@ -5,10 +5,17 @@ authors = ["zing <599490911@qq.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-#[[bin]]
-#doc=false
-#name= "app"
-#path="src/main.rs"
+[[bin]]
+doc = false
+name = "app"
+path = "src/main.rs"
+
+[[bin]]
+doc = false
+name = "test"
+path = "src/test_main.rs"
+
+
 [[example]]
 name = "example"
 
