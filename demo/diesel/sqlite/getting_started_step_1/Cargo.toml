@@ -7,7 +7,4 @@ authors = ["Taryn Hill <taryn@phrohdoh.com>"]
 [dependencies]
 diesel = { version = "1.0.0", features = ["sqlite"] }
 dotenv = "0.10"
-
-[dependencies.rusqlite]
-version = "0.26.0"
-features = ["bundled"]
+rusqlite = { version = "0.26.0", features = ["bundled"] }

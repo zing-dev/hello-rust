@@ -736,9 +736,9 @@ dependencies = [
 
 [[package]]
 name = "diesel"
-version = "1.4.4"
+version = "1.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33d7ca63eb2efea87a7f56a283acc49e2ce4b2bd54adf7465dc1d81fef13d8fc"
+checksum = "b28135ecf6b7d446b43e27e225622a038cc4e2930a1022f51cdb97ada19b8e4d"
 dependencies = [
  "byteorder",
  "diesel_derives",
@@ -1199,7 +1199,6 @@ dependencies = [
  "actix-web",
  "byteorder",
  "chrono",
- "diesel",
  "dotenv 0.9.0",
  "env_logger 0.6.2",
  "ferris-says",
@@ -2244,7 +2243,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rusqlite-crates"
+name = "rusqlite-crate"
 version = "0.1.0"
 dependencies = [
  "rusqlite",
