@@ -79,3 +79,71 @@ fn rotate_left_or_right_test() {
     // 1000 0010 >> 2 1010 0000 => a0
     assert_eq!(0x82u8.rotate_right(2), 0xa0);
 }
+
+/// 反转字节序如果当前为大端法则将转换为小端法,对u8类型,转换前后一致
+/// pub const fn swap_bytes(self) -> u8
+#[test]
+fn swap_bytes_test() {
+    assert_eq!(0x12u8.swap_bytes(), 0x12);
+    assert_eq!(0xffu8.swap_bytes(), 0xff);
+    assert_eq!(0xff00_u16.swap_bytes(), 0x00ffu16);
+    assert_eq!(0xff00ff00_u32.swap_bytes(), 0x00ff00ff_u32);
+}
+
+/// 反转位,将当前的数值的二进制位数反转
+/// pub const fn reverse_bits(self) -> u8
+#[test]
+fn reverse_bits_test() {
+    assert_eq!(0b10101010u8.reverse_bits(), 0b01010101u8, "{}", 0b01010101u8);
+}
+
+#[test]
+fn from_be_or_lt_test() {
+    let n = 0x1Au8;
+
+    if cfg!(target_endian = "big") {
+        assert_eq!(u8::from_be(n), n)
+    } else {
+        assert_eq!(u8::from_be(n), n.swap_bytes())
+    }
+
+    if cfg!(target_endian = "little") {
+        assert_eq!(u8::from_le(n), n)
+    } else {
+        assert_eq!(u8::from_le(n), n.swap_bytes())
+    }
+}
+
+#[test]
+fn to_be_or_lt_test() {
+    let n = 0x1Au8;
+
+    if cfg!(target_endian = "big") {
+        assert_eq!(u8::to_be(n), n)
+    } else {
+        assert_eq!(u8::to_be(n), n.swap_bytes())
+    }
+
+    if cfg!(target_endian = "little") {
+        assert_eq!(u8::to_le(n), n)
+    } else {
+        assert_eq!(u8::to_le(n), n.swap_bytes())
+    }
+}
+
+/// 两个整数相加,相减,相乘,相除,余数.溢出返回None
+/// pub const fn checked_add(self, rhs: u8) -> Option<u8>
+/// pub const fn checked_sub(self, rhs: u8) -> Option<u8>
+/// pub const fn checked_mul(self, rhs: u8) -> Option<u8>
+/// pub const fn checked_div(self, rhs: u8) -> Option<u8>
+/// pub const fn checked_rem(self, rhs: u8) -> Option<u8>
+#[test]
+fn checked_add_test() {
+    assert_eq!(1u8.checked_add(1u8), Some(2u8));
+    assert_eq!(0xffu8.checked_add(1u8), None);
+    assert_eq!(0xffu8.checked_sub(1u8), Some(0xfe));
+    assert_eq!(0xfeu8.checked_sub(0xffu8), None);
+    assert_eq!(0x2u8.checked_mul(0x4u8), Some(0x8u8));
+    assert_eq!(0x2u8.checked_div(0x4u8), Some(0x0u8));
+    assert_eq!(0x10u8.checked_rem(0x3u8), Some(0x1u8));
+}
