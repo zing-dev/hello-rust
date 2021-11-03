@@ -356,8 +356,6 @@ pub mod str_test {
 
     #[test]
     fn valid_up_to() {
-        use std::str;
-
         // some invalid bytes, in a vector
         let sparkle_heart = vec![0, 159, 146, 150];
 
@@ -370,8 +368,6 @@ pub mod str_test {
 
     #[test]
     fn from_utf8() {
-        use std::str;
-
         // some bytes, in a vector
         let sparkle_heart = vec![240, 159, 146, 150];
 

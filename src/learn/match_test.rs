@@ -11,7 +11,7 @@ pub fn match_test() {
         // Match several values
         2 | 3 | 5 | 7 | 11 => println!("This is a prime"),
         // Match an inclusive range
-        13...39 => println!("A teen"),
+        13..=39 => println!("A teen"),
         40..=90 => println!("B teen"),
         // Handle the rest of cases
         _ => println!("Ain't special"),
@@ -262,7 +262,7 @@ pub fn if_let() {
             // `i` from the option.
         }
         _ => {} // ^ Required because `match` is exhaustive. Doesn't it seem
-                // like wasted space?
+        // like wasted space?
     };
     // All have type `Option<i32>`
     let number = Some(7);
@@ -288,8 +288,8 @@ pub fn if_let() {
 
     if let Some(i) = emoticon {
         println!("Matched {:?}!", i);
-    // Destructure failed. Evaluate an `else if` condition to see if the
-    // alternate failure branch should be taken:
+        // Destructure failed. Evaluate an `else if` condition to see if the
+        // alternate failure branch should be taken:
     } else if i_like_letters {
         println!("Didn't match a number. Let's go with a letter!");
     } else {

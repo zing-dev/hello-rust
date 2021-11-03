@@ -1,4 +1,3 @@
-#[test]
 //RAII (Resource Acquisition Is Initialization) 资源获取初始化
 fn raii() {
     // raii.rs
@@ -245,6 +244,7 @@ fn borrow_alias() {
         new_borrowed_point.x, new_borrowed_point.y, new_borrowed_point.z
     );
 }
+
 #[test]
 fn borrow_ref() {
     #[derive(Clone, Copy)]

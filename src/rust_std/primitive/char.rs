@@ -187,9 +187,23 @@ pub mod method {
 
     /// 判断当前字符是不是小写字符
     /// pub fn is_lowercase(self) -> bool
+    /// 判断当前字符是不是大写字符
+    /// pub fn is_uppercase(self) -> bool
     #[test]
-    fn is_lowercase() {
+    fn is_lowercase_or_is_uppercase() {
         assert!('a'.is_lowercase());
         assert!(!'A'.is_lowercase());
+        // assert!('一'.is_uppercase());
+        assert!('A'.is_uppercase());
+        assert!(!'a'.is_uppercase());
+    }
+
+    #[test]
+    fn make_ascii_lowercase_or_uppercase_test() {
+        let mut a = 'a';
+        a.make_ascii_uppercase();
+        assert_eq!('A', a);
+        a.make_ascii_lowercase();
+        assert_eq!('a', a);
     }
 }

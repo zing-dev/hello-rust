@@ -3,7 +3,7 @@ fn quick_start() {
     let number = 42;
     match number {
         0 => println!("0"),
-        1...3 => println!("1...3"),
+        1..=3 => println!("1...3"),
         5 | 7 | 13 => println!("5|7|13"),
         n @ 42 => println!("n:{}", n),
         _ => println!("default"),

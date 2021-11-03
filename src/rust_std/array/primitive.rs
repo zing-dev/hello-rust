@@ -24,11 +24,11 @@ fn define_test() {
     let array: [i32; 3] = [0; 3];
 
     // This creates a slice iterator, producing references to each value.
-    #[allow(array_into_iter)]
-    for item in array.into_iter().enumerate() {
-        let (i, x): (usize, &i32) = item;
-        println!("array[{}] = {}", i, x);
-    }
+    // #[allow(array_into_iter)]
+    // for item in array.into_iter().enumerate() {
+    //     let (i, x): (usize, &i32) = item;
+    //     println!("array[{}] = {}", i, x);
+    // }
 
     // The `array_into_iter` lint suggests this change for future compatibility:
     for item in array.iter().enumerate() {

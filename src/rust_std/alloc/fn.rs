@@ -9,7 +9,7 @@ fn alloc_test() {
         // 分配空间返回指向当前地址的指针
         let ptr = alloc(layout);
 
-        // 给当前指针指向第内存赋值
+        // 给当前指针指向的内存赋值
         *(ptr as *mut u16) = 42;
         assert_eq!(*(ptr as *mut u16), 42);
 
