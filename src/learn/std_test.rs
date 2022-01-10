@@ -1,3 +1,4 @@
+#[allow(unused_must_use)]
 pub fn box_test() {
     use std::mem;
 

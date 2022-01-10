@@ -1,5 +1,6 @@
 // A fixed-size array, denoted [T; N],
 // for the element type, T, and the non-negative compile-time constant size, N.
+#[allow(unused_imports)]
 
 use std::array::IntoIter;
 
@@ -75,6 +76,7 @@ fn iter() {
 }
 
 
+#[allow(unused_imports)]
 pub mod method {
     // #[test]
     // fn zip_test() {

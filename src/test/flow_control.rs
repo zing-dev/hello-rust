@@ -5,11 +5,11 @@ pub mod if_else {
     fn common() {
         let n = rand::thread_rng().gen::<i8>();
         if n < 0 {
-            print!("{} is negative", n);
+            print!("rand {} is negative", n);
         } else if n > 0 {
-            print!("{} is positive", n);
+            print!("rand {} is positive", n);
         } else {
-            print!("{} is zero", n);
+            print!("rand {} is zero", n);
         }
     }
 
@@ -28,9 +28,10 @@ pub mod if_else {
 }
 
 pub mod loop_test {
-    use rand::Rng;
     use std::thread::sleep;
     use std::time::Duration;
+
+    use rand::Rng;
 
     #[test]
     #[allow(unreachable_code)]
@@ -75,6 +76,20 @@ pub mod loop_test {
                 }
             }
         )
+    }
+
+    #[test]
+    fn return_match() {
+        let r = rand::thread_rng().gen::<u8>();
+        let a = match r {
+            r if r < 10 => r,
+            r if r < 30 => r,
+            _ => {
+                println!("never");
+                return
+            }
+        };
+        println!("rand {}", a);
     }
 }
 

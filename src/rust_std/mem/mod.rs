@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 pub mod r#fn {
     use std::mem::{self, size_of, size_of_val};
 
