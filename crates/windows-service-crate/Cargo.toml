@@ -1,0 +1,34 @@
+[package]
+name = "windows-service-crate"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[[bin]]
+name = "install_service"
+path = "./src/install_service.rs"
+
+[[bin]]
+name = "uninstall_service"
+path = "./src/uninstall_service.rs"
+
+[[bin]]
+name = "ping_service"
+path = "./src/ping_service.rs"
+
+[[bin]]
+name = "pause_continue"
+path = "./src/pause_continue.rs"
+
+[[bin]]
+name = "service_config"
+path = "./src/service_config.rs"
+
+[[bin]]
+name = "service_failure_actions"
+path = "./src/service_failure_actions.rs"
+
+[dependencies]
+windows-service = "0.4.0"

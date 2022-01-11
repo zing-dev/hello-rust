@@ -16,9 +16,12 @@ name = "test"
 path = "src/test_main.rs"
 
 [[bin]]
-name = "sync"
+name = "bin-sync"
 path = "src/lib/sync/main.rs"
 
+[[bin]]
+name = "bin-process"
+path = "src/rust_std/process/main.rs"
 
 [[example]]
 name = "example"
@@ -32,6 +35,7 @@ members = [
     "crates/paho-mqtt-example",
     "crates/rusqlite-crate",
     "crates/ctrlc-crate",
+    "crates/windows-service-crate",
     "crates/hello-world",
     "crates/socket2/quick-start",
     "crates/diesel/sqlite/getting_started_step_1",
